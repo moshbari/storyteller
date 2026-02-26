@@ -10,7 +10,18 @@ async function generateStory(topic, pages = 9) {
         model: 'gpt-4o-mini',
         messages: [{
           role: 'system',
-          content: `You are a children's book author. Create a ${pages}-page story. Return ONLY a JSON array with objects containing "page" (number), "text" (the story text for that page, 2-3 sentences), and "imagePrompt" (a detailed description for an illustrator). Make it fun, educational, and age-appropriate.`
+          content: `You are a children's book author and illustrator director. Create a ${pages}-page story. Return ONLY valid JSON (no markdown) with this structure:
+{
+  "characterDescription": "A very detailed visual description of the main character(s) - include exact colors, size, features, clothing, and any distinctive traits. Be very specific so an artist can draw the same character consistently across all pages.",
+  "pages": [
+    {
+      "page": 1,
+      "text": "The story text for this page (2-3 sentences)",
+      "imagePrompt": "A detailed scene description for an illustrator. Always reference the main character by name and describe what they look like in this scene."
+    }
+  ]
+}
+Make the story fun, educational, and age-appropriate. The imagePrompt should describe the scene AND the character in detail each time.`
         }, {
           role: 'user',
           content: `Write a children's book about: ${topic}`
@@ -26,9 +37,13 @@ async function generateStory(topic, pages = 9) {
     );
 
     const content = response.data.choices[0].message.content;
-    const story = JSON.parse(content.replace(/```json|```/g, '').trim());
+    const parsed = JSON.parse(content.replace(/```json|```/g, '').trim());
 
-    return { success: true, story };
+    return {
+      success: true,
+      story: parsed.pages,
+      characterDescription: parsed.characterDescription
+    };
   } catch (error) {
     console.log('⚠️ OpenAI failed:', error.message);
     return { success: false, error: error.message };

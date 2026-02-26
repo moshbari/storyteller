@@ -5,11 +5,11 @@ const auth = require('../middleware/auth');
 const Book = require('../models/Book');
 const User = require('../models/User');
 const { generateStory } = require('../services/openaiService');
-const { generateImage } = require('../services/imageService');
+const geminiService = require('../services/geminiService');
+const fluxService = require('../services/fluxService');
 
 const router = express.Router();
 
-// Make sure images folder exists
 const imagesDir = path.join(__dirname, '../../public/images');
 if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
 
@@ -25,37 +25,47 @@ router.post('/create', auth, async (req, res) => {
 
     console.log('📖 Creating book:', title);
 
-    // Step 1: Generate story
+    // Step 1: Generate story with character description
     console.log('📝 Generating story...');
     const storyResult = await generateStory(topic);
     if (!storyResult.success) {
       return res.status(500).json({ error: 'Failed to generate story' });
     }
 
+    console.log('🎭 Character:', storyResult.characterDescription);
+
     const bookId = Date.now().toString();
     const bookImgDir = path.join(imagesDir, bookId);
     fs.mkdirSync(bookImgDir, { recursive: true });
 
-    // Step 2: Generate images
-    console.log('🎨 Generating images...');
+    // Step 2: Generate ALL images with character consistency via Gemini conversation
+    console.log('🎨 Generating images with character consistency...');
+    const geminiResults = await geminiService.generateBookImages(
+      storyResult.story,
+      storyResult.characterDescription
+    );
+
+    // Step 3: Build pages, use Flux fallback for any failed Gemini images
     const pages = [];
     for (let i = 0; i < storyResult.story.length; i++) {
       const page = storyResult.story[i];
-      console.log('  🖼️ Page ' + (i + 1) + '/' + storyResult.story.length);
-
-      const imgResult = await generateImage(page.imagePrompt);
       let imageUrl = '';
+      let provider = 'none';
 
-      if (imgResult.success) {
-        if (imgResult.imageData) {
-          // Gemini returns base64 - save to file
-          const fileName = 'page-' + (i + 1) + '.png';
-          const filePath = path.join(bookImgDir, fileName);
-          fs.writeFileSync(filePath, Buffer.from(imgResult.imageData, 'base64'));
-          imageUrl = '/images/' + bookId + '/' + fileName;
-        } else if (imgResult.imageUrl) {
-          // Flux returns URL
-          imageUrl = imgResult.imageUrl;
+      if (geminiResults[i] && geminiResults[i].success) {
+        // Gemini succeeded - save image
+        const fileName = 'page-' + (i + 1) + '.png';
+        const filePath = path.join(bookImgDir, fileName);
+        fs.writeFileSync(filePath, Buffer.from(geminiResults[i].imageData, 'base64'));
+        imageUrl = '/images/' + bookId + '/' + fileName;
+        provider = 'gemini';
+      } else {
+        // Flux fallback
+        console.log('  🔄 Flux fallback for page ' + (i + 1));
+        const fluxResult = await fluxService.generateImage(page.imagePrompt);
+        if (fluxResult.success) {
+          imageUrl = fluxResult.imageUrl;
+          provider = 'flux';
         }
       }
 
@@ -63,8 +73,8 @@ router.post('/create', auth, async (req, res) => {
         pageNumber: i + 1,
         text: page.text,
         imagePrompt: page.imagePrompt,
-        imageUrl: imageUrl,
-        imageProvider: imgResult.success ? imgResult.provider : 'none'
+        imageUrl,
+        imageProvider: provider
       });
     }
 
