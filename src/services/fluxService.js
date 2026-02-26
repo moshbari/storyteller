@@ -4,11 +4,9 @@ const REPLICATE_API_KEY = process.env.REPLICATE_API_KEY;
 
 async function generateImage(prompt) {
   try {
-    // Start the image generation
     const response = await axios.post(
-      'https://api.replicate.com/v1/predictions',
+      'https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions',
       {
-        version: 'black-forest-labs/flux-schnell',
         input: {
           prompt: `Children's book illustration: ${prompt}. Style: colorful, cartoon, friendly, suitable for kids.`,
           num_outputs: 1,
@@ -18,31 +16,22 @@ async function generateImage(prompt) {
       {
         headers: {
           'Authorization': `Bearer ${REPLICATE_API_KEY}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Prefer': 'wait'
         }
       }
     );
 
-    // Wait for result
-    let prediction = response.data;
-    while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const check = await axios.get(prediction.urls.get, {
-        headers: { 'Authorization': `Bearer ${REPLICATE_API_KEY}` }
-      });
-      prediction = check.data;
-    }
-
-    if (prediction.status === 'succeeded') {
+    if (response.data.output && response.data.output.length > 0) {
       return {
         success: true,
-        imageUrl: prediction.output[0]
+        imageUrl: response.data.output[0]
       };
     }
 
-    return { success: false, error: 'Flux generation failed' };
+    return { success: false, error: 'No image generated' };
   } catch (error) {
-    console.log('⚠️ Flux failed:', error.message);
+    console.log('⚠️ Flux failed:', error.response?.data?.detail || error.message);
     return { success: false, error: error.message };
   }
 }
