@@ -531,16 +531,16 @@
           let ctaClass = 'cta-free';
           let ctaText = 'Get Started Free';
           let ctaUrl = getWhopTierUrl(t.name);
-          if (isFeatured) { ctaClass = 'cta-featured'; ctaText = 'Get ' + t.name + ' — $' + t.price + '/mo'; }
-          else if (!isFree) { ctaClass = 'cta-premium'; ctaText = 'Get ' + t.name + ' — $' + t.price + '/mo'; }
+          if (isFeatured) { ctaClass = 'cta-featured'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
+          else if (!isFree) { ctaClass = 'cta-premium'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
 
-          const priceLabel = isFree ? '' : '/month';
+          const priceLabel = isFree ? '' : ' <span style="font-size:14px;color:#8395A7">one-time</span>';
 
           return '<div class="tier-card ' + (isFeatured ? 'featured' : '') + '">' +
             badge +
             '<div class="tier-name">' + t.name + '</div>' +
-            '<div class="price-row"><span class="price-amount">' + (isFree ? 'Free' : '$' + t.price) + '</span><span class="price-label">' + priceLabel + '</span></div>' +
-            '<div class="tier-credits">📚 ' + t.credits + ' book' + (t.credits > 1 ? 's' : '') + (isFree ? ' included' : ' / month') + '</div>' +
+            '<div class="price-row"><span class="price-amount">' + (isFree ? 'Free' : '$' + t.price) + '</span>' + priceLabel + '</div>' +
+            '<div class="tier-credits">📚 ' + t.credits + ' book' + (t.credits > 1 ? 's' : '') + ' included</div>' +
             '<ul class="tier-features">' + features + '</ul>' +
             '<a href="' + ctaUrl + '" target="_blank" class="tier-cta ' + ctaClass + '">' + ctaText + '</a>' +
             '</div>';
