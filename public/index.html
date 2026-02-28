@@ -355,8 +355,8 @@
       <div class="logo" onclick="goHome()">StoryTeller <span class="sparkle">✨</span></div>
       <div class="nav-right" id="navRight">
         <a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">Pricing</a>
-        <button class="btn-pill btn-ghost" onclick="openModal('login')">Log In</button>
-        <button class="btn-pill btn-primary" onclick="openModal('signup')">Sign Up Free</button>
+        <button class="btn-pill btn-ghost" onclick="openModal()">Log In</button>
+        <button class="btn-pill btn-primary" onclick="window.open('https://whop.com/checkout/plan_mPDplqokY94ye/','_blank')">Get Started Free</button>
       </div>
     </nav>
     <section class="section active" id="heroSection">
@@ -365,7 +365,7 @@
         <div class="hero-badge"><span class="dot"></span> OpenClaw-Style AI Agent — Built for Children's Books</div>
         <h1>3 Clicks.<br><span class="grad">A Complete Children's<br>Book.</span><br>Zero Writing.</h1>
         <p>StoryTeller is an autonomous AI book agent — like OpenClaw, but for children's books. Pick a done-for-you story idea, hit create, and three AI agents write, illustrate, and publish a print-ready book while you watch. No writing. No design skills. No effort.</p>
-        <button class="btn-hero" onclick="openModal('signup')">Create Your First Book Free →</button>
+        <button class="btn-hero" onclick="window.open('https://whop.com/checkout/plan_mPDplqokY94ye/','_blank')">Create Your First Book Free →</button>
         <div class="hero-features">
           <div class="hero-feat"><div class="icon">🖱️</div>3 Clicks to a Book</div>
           <div class="hero-feat"><div class="icon">🤖</div>3 Autonomous Agents</div>
@@ -611,7 +611,7 @@
         <div class="cta-box">
           <h2>Three Clicks. A Finished Book. Try It Free. 📚</h2>
           <p>No writing. No design skills. No effort. Just pick, click, and download. Your AI agents are standing by.</p>
-          <button class="cta-btn" onclick="openModal('signup')">Create Your First Book Free →</button>
+          <button class="cta-btn" onclick="window.open('https://whop.com/checkout/plan_mPDplqokY94ye/','_blank')">Create Your First Book Free →</button>
         </div>
       </div>
     </div>
@@ -699,8 +699,7 @@
     </section>
   </div>
   <div class="modal-bg" id="authModal"><div class="modal-box"><button class="close" onclick="closeModal()">&times;</button>
-    <div id="signupView"><h2>Join StoryTeller 🎨</h2><p class="sub">Create your first book for free!</p><div class="form-err" id="signupErr"></div><div class="fg"><label>Name</label><input type="text" id="sName" placeholder="Your name"></div><div class="fg"><label>Email</label><input type="email" id="sEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="sPass" placeholder="6+ characters"></div><div style="margin:16px 0 8px;display:flex;align-items:flex-start;gap:10px;cursor:pointer" onclick="var cb=document.getElementById('sTos');if(event.target!==cb)cb.checked=!cb.checked"><input type="checkbox" id="sTos" style="margin-top:4px;accent-color:#FF6B6B;cursor:pointer;flex-shrink:0;width:16px;height:16px"><span style="font-size:12px;color:var(--muted);line-height:1.5">I have read and agree to the <a href="/terms" target="_blank" style="color:#56CCF2;font-weight:700" onclick="event.stopPropagation()">Terms of Service</a>, <a href="https://winarzapps.com/privacy-policy/" target="_blank" style="color:#56CCF2;font-weight:700" onclick="event.stopPropagation()">Privacy Policy</a>, and <a href="/terms" target="_blank" style="color:#56CCF2;font-weight:700" onclick="event.stopPropagation()">Refund Policy</a>.</span></div><button class="btn-submit" onclick="doSignup()">Create My Account 🚀</button><p class="switch-link">Already have an account? <a onclick="openModal('login')">Log in</a></p></div>
-    <div id="loginView" style="display:none"><h2>Welcome Back! 👋</h2><p class="sub">Let's make some books</p><div class="form-err" id="loginErr"></div><div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Your password"></div><button class="btn-submit" onclick="doLogin()">Log In 📖</button><p class="switch-link">Don't have an account? <a onclick="openModal('signup')">Sign up free</a></p></div>
+    <div id="loginView"><h2>Welcome Back! 👋</h2><p class="sub">Let's make some books</p><div class="form-err" id="loginErr"></div><div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Your password"></div><button class="btn-submit" onclick="doLogin()">Log In 📖</button><p class="switch-link">Don't have an account? <a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank">Get Started Free</a></p></div>
   </div></div>
   <div class="wizard-overlay" id="wizardOverlay"><div class="wizard-particles" id="wizParticles"></div>
     <div class="wizard-content">
@@ -837,12 +836,11 @@
     function chooseAllForMe(){loadIdeas();setTimeout(()=>{const chips=document.querySelectorAll('.idea-chip');if(chips.length>0){const pick=chips[Math.floor(Math.random()*chips.length)];pick.click();}const artChips=document.querySelectorAll('#artChips .opt-chip');const moodChips=document.querySelectorAll('#moodChips .opt-chip');artChips[Math.floor(Math.random()*artChips.length)].click();moodChips[Math.floor(Math.random()*moodChips.length)].click();showToast('✨ All picked for you! Hit Generate!');},100);}
     function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
     function goHome(){if(token){showSection('dashSection');updateLanding();}else{showSection('heroSection');updateLanding();}}
-    function openModal(t){document.getElementById('authModal').classList.add('open');document.getElementById('signupView').style.display=t==='signup'?'block':'none';document.getElementById('loginView').style.display=t==='login'?'block':'none';}
+    function openModal(){document.getElementById('authModal').classList.add('open');}
     function closeModal(){document.getElementById('authModal').classList.remove('open');}
     function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
-    async function doSignup(){const n=document.getElementById('sName').value.trim();const e=document.getElementById('sEmail').value.trim();const p=document.getElementById('sPass').value;const tos=document.getElementById('sTos').checked;if(!n||!e||!p)return showErr('signupErr','Please fill in all fields');if(p.length<6)return showErr('signupErr','Password must be 6+ characters');if(!tos)return showErr('signupErr','You must agree to the Terms of Service');try{const r=await fetch(API+'/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,password:p,tosAgreed:true})});const d=await r.json();if(d.error)return showErr('signupErr',d.error);token=d.token;user=d.user;localStorage.setItem('st_token',token);localStorage.setItem('st_user',JSON.stringify(user));closeModal();showDash();}catch(x){showErr('signupErr','Something went wrong');}}
     async function doLogin(){const e=document.getElementById('lEmail').value.trim();const p=document.getElementById('lPass').value;if(!e||!p)return showErr('loginErr','Please fill in all fields');try{const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});const d=await r.json();if(d.error)return showErr('loginErr',d.error);token=d.token;user=d.user;localStorage.setItem('st_token',token);localStorage.setItem('st_user',JSON.stringify(user));closeModal();showDash();}catch(x){showErr('loginErr','Something went wrong');}}
-    function logout(){token=null;user=null;localStorage.removeItem('st_token');localStorage.removeItem('st_user');showSection('heroSection');document.getElementById('navRight').innerHTML='<a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">Pricing</a><button class="btn-pill btn-ghost" onclick="openModal(\'login\')">Log In</button><button class="btn-pill btn-primary" onclick="openModal(\'signup\')">Sign Up Free</button>';}
+    function logout(){token=null;user=null;localStorage.removeItem('st_token');localStorage.removeItem('st_user');showSection('heroSection');document.getElementById('navRight').innerHTML='<a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">Pricing</a><button class="btn-pill btn-ghost" onclick="openModal()">Log In</button><a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank" class="btn-pill btn-primary" style="text-decoration:none">Get Started Free</a>';}
     function showDash(){showSection('dashSection');updateLanding();document.getElementById('welcomeMsg').textContent='Welcome, '+(user?.name||'there')+'! 👋';document.getElementById('navRight').innerHTML='<span class="greeting">'+(user?.name||'')+'</span><a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">💎 Pricing</a><button class="btn-pill btn-ghost" onclick="logout()">Log Out</button>';loadBooks();loadIdeas();}
     async function loadBooks(){try{const r=await fetch(API+'/books/my-books',{headers:{'Authorization':'Bearer '+token}});const d=await r.json();const books=d.books||[];document.getElementById('sBooks').textContent=books.length;document.getElementById('sPlan').textContent=(user?.plan||'free').charAt(0).toUpperCase()+(user?.plan||'free').slice(1);document.getElementById('sRemain').textContent=Math.max(0,(user?.booksLimit||3)-books.length);const grid=document.getElementById('booksGrid');if(books.length===0){grid.innerHTML='<div class="no-books-msg"><div class="big-emoji">📚</div><p>No books yet — create your first one above!</p></div>';return;}grid.innerHTML=books.map(b=>{const img=b.pages&&b.pages[0]&&b.pages[0].imageUrl?'<img src="'+b.pages[0].imageUrl+'" alt="cover">':'<span class="no-img">📖</span>';return'<div class="book-card" onclick="openBook(\''+b._id+'\')"><div class="book-thumb">'+img+'</div><div class="book-meta"><h4>'+b.title+'</h4><p>'+b.pages.length+' pages · '+new Date(b.createdAt).toLocaleDateString()+'</p></div></div>';}).join('');}catch(e){console.log('Load error:',e);}}
     async function startCreate(){const t=document.getElementById('inTitle').value.trim();const tp=document.getElementById('inTopic').value.trim();if(!t||!tp)return showToast('Please enter a title and topic! ✏️');
