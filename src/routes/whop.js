@@ -260,9 +260,36 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     }
 
     // ============================================
-    // DEFAULT: Unknown event — just acknowledge
+    // DEFAULT: Try to process any event with email + product
+    // This catches checkout.completed, membership_went_valid, etc.
     // ============================================
-    console.log('ℹ️ Unhandled Whop event:', event);
+    console.log('ℹ️ Non-standard Whop event:', event);
+    
+    if (email && finalProductId) {
+      const user = await findOrCreateUser(email, userName);
+      const product = PRODUCT_MAP[finalProductId];
+      
+      if (product && product.type === 'plan') {
+        // Only upgrade if it's a better plan
+        const planOrder = { free: 0, basic: 1, pro: 2 };
+        if ((planOrder[product.plan] || 0) > (planOrder[user.plan] || 0)) {
+          user.plan = product.plan;
+          user.booksLimit = product.booksLimit;
+          user.booksCreated = 0;
+          await user.save();
+          console.log('✅ Catch-all upgraded:', email, '→', product.name);
+        }
+      } else if (product && product.type === 'credits') {
+        user.booksLimit = (user.booksLimit || 0) + product.credits;
+        await user.save();
+        console.log('✅ Catch-all added credits:', email, '+', product.credits);
+      }
+    } else if (email) {
+      // At minimum, create the user even without a product match
+      await findOrCreateUser(email, userName);
+      console.log('✅ Catch-all ensured user:', email);
+    }
+    
     return res.status(200).json({ received: true, event });
 
   } catch (error) {

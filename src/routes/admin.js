@@ -277,6 +277,108 @@ router.get('/tos-proof/:email', adminAuth, async (req, res) => {
 });
 
 // ============================================
+// QUICK ADMIN TOOLS (by email — for dispute/support)
+// ============================================
+
+// Upgrade a user's plan by email
+router.post('/quick-upgrade', adminAuth, async (req, res) => {
+  try {
+    const { email, plan, booksLimit } = req.body;
+    if (!email || !plan) return res.status(400).json({ error: 'Email and plan required' });
+    
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) return res.status(404).json({ error: 'User not found: ' + email });
+
+    const oldPlan = user.plan;
+    const oldLimit = user.booksLimit;
+    
+    user.plan = plan;
+    if (booksLimit !== undefined) user.booksLimit = Number(booksLimit);
+    user.booksCreated = 0; // Reset book count on plan upgrade
+    await user.save();
+    
+    console.log('⬆️ Admin upgraded:', email, oldPlan, '→', plan, '| Limit:', oldLimit, '→', user.booksLimit);
+    res.json({ 
+      success: true, 
+      message: `Upgraded ${email} from ${oldPlan} to ${plan}`,
+      user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit, booksCreated: user.booksCreated }
+    });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// Add credits to a user by email
+router.post('/quick-add-credits', adminAuth, async (req, res) => {
+  try {
+    const { email, credits } = req.body;
+    if (!email || !credits) return res.status(400).json({ error: 'Email and credits required' });
+    
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) return res.status(404).json({ error: 'User not found: ' + email });
+
+    const oldLimit = user.booksLimit;
+    user.booksLimit = (user.booksLimit || 0) + Number(credits);
+    await user.save();
+    
+    console.log('💰 Admin added credits:', email, '+', credits, '| Limit:', oldLimit, '→', user.booksLimit);
+    res.json({ 
+      success: true, 
+      message: `Added ${credits} credits to ${email}. New limit: ${user.booksLimit}`,
+      user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit, booksCreated: user.booksCreated }
+    });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// Merge accounts: transfer plan/credits from Whop email to user's actual email
+router.post('/merge-accounts', adminAuth, async (req, res) => {
+  try {
+    const { whopEmail, userEmail } = req.body;
+    if (!whopEmail || !userEmail) return res.status(400).json({ error: 'Both whopEmail and userEmail required' });
+    
+    const whopUser = await User.findOne({ email: whopEmail.toLowerCase().trim() });
+    const realUser = await User.findOne({ email: userEmail.toLowerCase().trim() });
+    
+    if (!whopUser && !realUser) return res.status(404).json({ error: 'Neither account found' });
+    if (!realUser) return res.status(404).json({ error: 'User account not found: ' + userEmail });
+    
+    if (!whopUser) {
+      return res.status(404).json({ error: 'Whop account not found: ' + whopEmail + '. Use quick-upgrade instead to manually set the plan.' });
+    }
+
+    // Transfer plan and credits from Whop account to real account
+    const oldPlan = realUser.plan;
+    const oldLimit = realUser.booksLimit;
+    
+    // Take the better plan
+    const planOrder = { free: 0, basic: 1, pro: 2 };
+    if ((planOrder[whopUser.plan] || 0) > (planOrder[realUser.plan] || 0)) {
+      realUser.plan = whopUser.plan;
+    }
+    
+    // Take the higher book limit
+    realUser.booksLimit = Math.max(realUser.booksLimit || 0, whopUser.booksLimit || 0);
+    
+    // Copy Whop membership ID
+    if (whopUser.whopMembershipId) {
+      realUser.whopMembershipId = whopUser.whopMembershipId;
+    }
+    realUser.whopEmail = whopEmail.toLowerCase().trim();
+    
+    await realUser.save();
+    
+    // Delete the orphan Whop account
+    await User.findByIdAndDelete(whopUser._id);
+    
+    console.log('🔀 Merged accounts:', whopEmail, '→', userEmail, '| Plan:', oldPlan, '→', realUser.plan, '| Limit:', oldLimit, '→', realUser.booksLimit);
+    res.json({
+      success: true,
+      message: `Merged ${whopEmail} into ${userEmail}. Whop account deleted.`,
+      user: { name: realUser.name, email: realUser.email, plan: realUser.plan, booksLimit: realUser.booksLimit },
+      merged: { fromEmail: whopEmail, toEmail: userEmail, planBefore: oldPlan, planAfter: realUser.plan, limitBefore: oldLimit, limitAfter: realUser.booksLimit }
+    });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// ============================================
 // PUBLIC PRICING (no auth — for user-facing page)
 // ============================================
 router.get('/public/pricing', async (req, res) => {
