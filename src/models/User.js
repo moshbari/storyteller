@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   booksCreated: { type: Number, default: 0 },
   booksLimit: { type: Number, default: 3 },
   active: { type: Boolean, default: true },
+  whopMembershipId: { type: String, default: '' },
+  whopEmail: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

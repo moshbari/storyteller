@@ -333,6 +333,8 @@
       font-weight: 700;
       cursor: pointer;
       transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
     }
     .pack-buy:hover { background: var(--sunset); color: white; border-color: var(--sunset); }
 
@@ -480,6 +482,31 @@
     const packIcons = ['📚', '📖', '🎁'];
     const packIconClasses = ['pack-icon-1', 'pack-icon-2', 'pack-icon-3'];
 
+    // Whop checkout URLs
+    const WHOP_URLS = {
+      tiers: {
+        'Free': 'https://whop.com/zpresso-llc/story-teller-free-plan-3-books',
+        'Starter': 'https://whop.com/zpresso-llc/story-teller-starter-plan',
+        'Creator': 'https://whop.com/zpresso-llc/storyteller-creator-plan-50-books-month'
+      },
+      packs: {
+        5: 'https://whop.com/zpresso-llc/storyteller-5-book-credits',
+        15: 'https://whop.com/zpresso-llc/storyteller-15-book-credits/',
+        50: 'https://whop.com/zpresso-llc/storyteller-50-book-credits/'
+      }
+    };
+
+    function getWhopTierUrl(tierName) {
+      const name = tierName.toLowerCase();
+      if (name.includes('creator')) return WHOP_URLS.tiers['Creator'];
+      if (name.includes('starter')) return WHOP_URLS.tiers['Starter'];
+      return WHOP_URLS.tiers['Free'];
+    }
+
+    function getWhopPackUrl(credits) {
+      return WHOP_URLS.packs[credits] || WHOP_URLS.packs[5];
+    }
+
     async function loadPricing() {
       try {
         const r = await fetch('/api/admin/public/pricing');
@@ -502,16 +529,19 @@
 
           let ctaClass = 'cta-free';
           let ctaText = 'Get Started Free';
-          if (isFeatured) { ctaClass = 'cta-featured'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
-          else if (!isFree) { ctaClass = 'cta-premium'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
+          let ctaUrl = getWhopTierUrl(t.name);
+          if (isFeatured) { ctaClass = 'cta-featured'; ctaText = 'Get ' + t.name + ' — $' + t.price + '/mo'; }
+          else if (!isFree) { ctaClass = 'cta-premium'; ctaText = 'Get ' + t.name + ' — $' + t.price + '/mo'; }
+
+          const priceLabel = isFree ? '' : '/month';
 
           return '<div class="tier-card ' + (isFeatured ? 'featured' : '') + '">' +
             badge +
             '<div class="tier-name">' + t.name + '</div>' +
-            '<div class="price-row"><span class="price-amount">$' + t.price + '</span><span class="price-label">one-time</span></div>' +
-            '<div class="tier-credits">📚 ' + t.credits + ' book' + (t.credits > 1 ? 's' : '') + ' included</div>' +
+            '<div class="price-row"><span class="price-amount">' + (isFree ? 'Free' : '$' + t.price) + '</span><span class="price-label">' + priceLabel + '</span></div>' +
+            '<div class="tier-credits">📚 ' + t.credits + ' book' + (t.credits > 1 ? 's' : '') + (isFree ? ' included' : ' / month') + '</div>' +
             '<ul class="tier-features">' + features + '</ul>' +
-            '<a href="/" class="tier-cta ' + ctaClass + '">' + ctaText + '</a>' +
+            '<a href="' + ctaUrl + '" target="_blank" class="tier-cta ' + ctaClass + '">' + ctaText + '</a>' +
             '</div>';
         }).join('');
 
@@ -533,7 +563,7 @@
               '</div>' +
               '<div class="pack-right">' +
                 '<div class="pack-price">$' + p.price + '</div>' +
-                '<button class="pack-buy" onclick="window.location.href=\'/\'">Buy Now</button>' +
+                '<a class="pack-buy" href="' + getWhopPackUrl(p.credits) + '" target="_blank">Buy Now</a>' +
               '</div>' +
               '</div>';
           }).join('');
