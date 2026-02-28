@@ -151,6 +151,37 @@ router.post('/set-password', async (req, res) => {
   }
 });
 
+// Change password (authenticated user)
+router.post('/change-password', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Both current and new password required' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters' });
+
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const valid = await user.comparePassword(currentPassword);
+    if (!valid) return res.status(400).json({ error: 'Current password is incorrect' });
+
+    user.password = newPassword; // Pre-save hook will hash it
+    await user.save();
+    
+    console.log('🔒 Password changed for:', user.email);
+    res.json({ message: 'Password updated successfully!' });
+  } catch (error) {
+    console.log('❌ Change password error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get fresh user profile data (called on dashboard load)
 router.get('/me', async (req, res) => {
   try {

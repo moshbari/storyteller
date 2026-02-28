@@ -85,6 +85,7 @@
     .modal-box h2 { font-size:28px; text-align:center; margin-bottom:4px; color:var(--text); }
     .modal-box .sub { text-align:center; color:var(--muted); margin-bottom:24px; font-weight:500; }
     .form-err { background:rgba(220,38,38,0.1);color:#FF6B6B;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;display:none;margin-bottom:14px;border:1px solid rgba(220,38,38,0.2); }
+    .form-ok { background:rgba(107,203,119,0.1);color:#6BCB77;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;display:none;margin-bottom:14px;border:1px solid rgba(107,203,119,0.2); }
     .fg { margin-bottom:16px; }
     .fg label { display:block;font-weight:700;font-size:13px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px; }
     .fg input { width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:14px; font-size:16px;font-family:'Quicksand',sans-serif;font-weight:600;transition:0.3s;background:var(--bg-surface);color:var(--text); }
@@ -702,6 +703,22 @@
   <div class="modal-bg" id="authModal"><div class="modal-box"><button class="close" onclick="closeModal()">&times;</button>
     <div id="loginView"><h2>Welcome Back! 👋</h2><p class="sub">Let's make some books</p><div class="form-err" id="loginErr"></div><div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Your password"></div><button class="btn-submit" onclick="doLogin()">Log In 📖</button><p class="switch-link">Don't have an account? <a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank">Get Started Free</a></p><p class="switch-link" style="margin-top:6px;font-size:12px"><a href="https://moshbari.hesk.com/" target="_blank" style="color:#8395A7">Need help? Contact Support</a></p></div>
   </div></div>
+
+  <!-- PASSWORD CHANGE MODAL -->
+  <div class="modal-bg" id="pwModal">
+    <div class="modal-box">
+      <button class="close" onclick="closePwModal()">&times;</button>
+      <h2>Account Settings ⚙️</h2>
+      <p class="sub" id="pwUserInfo"></p>
+      <div class="form-err" id="pwErr"></div>
+      <div class="form-ok" id="pwOk"></div>
+      <div class="fg"><label>Current Password</label><input type="password" id="pwOld" placeholder="Enter current password" autocomplete="off"></div>
+      <div class="fg"><label>New Password</label><input type="password" id="pwNew" placeholder="At least 6 characters" autocomplete="off"></div>
+      <div class="fg"><label>Confirm New Password</label><input type="password" id="pwConfirm" placeholder="Type new password again" autocomplete="off"></div>
+      <button class="btn-submit" onclick="changePassword()">Update Password 🔒</button>
+      <p class="switch-link" style="margin-top:12px;font-size:12px"><a href="https://moshbari.hesk.com/" target="_blank" style="color:#8395A7">Need help? Contact Support</a></p>
+    </div>
+  </div>
   <div class="wizard-overlay" id="wizardOverlay"><div class="wizard-particles" id="wizParticles"></div>
     <div class="wizard-content">
       <div class="wizard-title" id="wizTitle">🤖 AI Agents at Work</div>
@@ -839,10 +856,14 @@
     function goHome(){if(token){showSection('dashSection');}else{showSection('heroSection');}}
     function openModal(){document.getElementById('authModal').classList.add('open');}
     function closeModal(){document.getElementById('authModal').classList.remove('open');}
+    function openPwModal(){document.getElementById('pwModal').classList.add('open');document.getElementById('pwUserInfo').textContent=(user?.name||'')+' · '+(user?.email||'')+' · '+(user?.plan||'free').charAt(0).toUpperCase()+(user?.plan||'free').slice(1)+' Plan';document.getElementById('pwOld').value='';document.getElementById('pwNew').value='';document.getElementById('pwConfirm').value='';document.getElementById('pwErr').style.display='none';document.getElementById('pwOk').style.display='none';}
+    function closePwModal(){document.getElementById('pwModal').classList.remove('open');}
+    async function changePassword(){const old=document.getElementById('pwOld').value;const nw=document.getElementById('pwNew').value;const cf=document.getElementById('pwConfirm').value;document.getElementById('pwErr').style.display='none';document.getElementById('pwOk').style.display='none';if(!old)return showPwErr('Enter your current password');if(!nw||nw.length<6)return showPwErr('New password must be at least 6 characters');if(nw!==cf)return showPwErr('New passwords do not match');if(old===nw)return showPwErr('New password must be different from current');try{const r=await fetch(API+'/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({currentPassword:old,newPassword:nw})});const d=await r.json();if(d.error)return showPwErr(d.error);document.getElementById('pwOk').textContent='✅ '+d.message;document.getElementById('pwOk').style.display='block';document.getElementById('pwOld').value='';document.getElementById('pwNew').value='';document.getElementById('pwConfirm').value='';}catch(e){showPwErr('Something went wrong');}}
+    function showPwErr(msg){document.getElementById('pwErr').textContent=msg;document.getElementById('pwErr').style.display='block';}
     function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
     async function doLogin(){const e=document.getElementById('lEmail').value.trim();const p=document.getElementById('lPass').value;if(!e||!p)return showErr('loginErr','Please fill in all fields');try{const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});const d=await r.json();if(d.error)return showErr('loginErr',d.error);token=d.token;user=d.user;localStorage.setItem('st_token',token);localStorage.setItem('st_user',JSON.stringify(user));closeModal();showDash();}catch(x){showErr('loginErr','Something went wrong');}}
     function logout(){token=null;user=null;localStorage.removeItem('st_token');localStorage.removeItem('st_user');showSection('heroSection');document.getElementById('navRight').innerHTML='<a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">Pricing</a><button class="btn-pill btn-ghost" onclick="openModal()">Log In</button><a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank" class="btn-pill btn-primary" style="text-decoration:none">Get Started Free</a>';}
-    async function showDash(){showSection('dashSection');document.getElementById('welcomeMsg').textContent='Welcome, '+(user?.name||'there')+'! 👋';document.getElementById('navRight').innerHTML='<span class="greeting">'+(user?.name||'')+'</span><a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">💎 Pricing</a><button class="btn-pill btn-ghost" onclick="logout()">Log Out</button>';await refreshUser();loadBooks();loadIdeas();}
+    async function showDash(){showSection('dashSection');document.getElementById('welcomeMsg').textContent='Welcome, '+(user?.name||'there')+'! 👋';document.getElementById('navRight').innerHTML='<span class="greeting" style="cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px" onclick="openPwModal()" title="Account Settings">'+(user?.name||'')+'</span><a href="/pricing.html" class="btn-pill btn-ghost" style="text-decoration:none">💎 Pricing</a><button class="btn-pill btn-ghost" onclick="logout()">Log Out</button>';await refreshUser();loadBooks();loadIdeas();}
     async function refreshUser(){try{const r=await fetch(API+'/auth/me',{headers:{'Authorization':'Bearer '+token}});const d=await r.json();if(d.user){user=d.user;localStorage.setItem('st_user',JSON.stringify(user));}}catch(e){console.log('Refresh user error:',e);}}
     async function loadBooks(){try{const r=await fetch(API+'/books/my-books',{headers:{'Authorization':'Bearer '+token}});const d=await r.json();const books=d.books||[];document.getElementById('sBooks').textContent=books.length;document.getElementById('sPlan').textContent=(user?.plan||'free').charAt(0).toUpperCase()+(user?.plan||'free').slice(1);document.getElementById('sRemain').textContent=Math.max(0,(user?.booksLimit||3)-books.length);const grid=document.getElementById('booksGrid');if(books.length===0){grid.innerHTML='<div class="no-books-msg"><div class="big-emoji">📚</div><p>No books yet — create your first one above!</p></div>';return;}grid.innerHTML=books.map(b=>{const img=b.pages&&b.pages[0]&&b.pages[0].imageUrl?'<img src="'+b.pages[0].imageUrl+'" alt="cover">':'<span class="no-img">📖</span>';return'<div class="book-card" onclick="openBook(\''+b._id+'\')"><div class="book-thumb">'+img+'</div><div class="book-meta"><h4>'+b.title+'</h4><p>'+b.pages.length+' pages · '+new Date(b.createdAt).toLocaleDateString()+'</p></div></div>';}).join('');}catch(e){console.log('Load error:',e);}}
     async function startCreate(){const t=document.getElementById('inTitle').value.trim();const tp=document.getElementById('inTopic').value.trim();if(!t||!tp)return showToast('Please enter a title and topic! ✏️');
