@@ -266,13 +266,16 @@
     /* GALLERY */
     .gallery-scroll { display:flex; gap:20px; overflow-x:auto; padding:0 20px 20px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
     .gallery-scroll::-webkit-scrollbar { display:none; }
-    .gallery-card { min-width:260px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.06); scroll-snap-align:start; transition:0.4s; flex-shrink:0; }
-    .gallery-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.1); }
-    .gallery-img { height:200px; background:linear-gradient(135deg,#FFF5F5,#F0F4FF); display:flex; align-items:center; justify-content:center; font-size:80px; overflow:hidden; }
+    .gallery-card { min-width:260px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.06); scroll-snap-align:start; transition:0.4s; flex-shrink:0; cursor:pointer; text-decoration:none; color:inherit; display:block; }
+    .gallery-card:hover { transform:translateY(-6px); box-shadow:0 16px 50px rgba(0,0,0,0.12); }
+    .gallery-img { height:220px; background:linear-gradient(135deg,#FFF5F5,#F0F4FF); display:flex; align-items:center; justify-content:center; font-size:80px; overflow:hidden; position:relative; }
+    .gallery-img img { width:100%; height:100%; object-fit:cover; }
+    .gallery-img .gallery-badge { position:absolute; top:10px; right:10px; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800; text-transform:uppercase; background:rgba(255,255,255,0.92); color:var(--coral); backdrop-filter:blur(4px); }
     .gallery-info { padding:16px; }
     .gallery-info h4 { font-size:15px; margin-bottom:4px; }
     .gallery-info p { font-size:12px; color:var(--muted); font-weight:600; }
     .gallery-style { display:inline-block; padding:3px 10px; border-radius:8px; font-size:10px; font-weight:800; text-transform:uppercase; background:rgba(255,107,107,0.1); color:var(--coral); margin-top:6px; }
+    .gallery-link { display:inline-block; margin-top:8px; font-size:11px; font-weight:700; color:var(--ocean); text-decoration:none; }
 
     /* FEATURES */
     .features-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
@@ -386,12 +389,30 @@
         <h2 class="lp-title">Books Created by <span class="grad">Our Agents</span></h2>
         <p class="lp-subtitle">Real books generated autonomously — each one unique, illustrated, and ready in under 2 minutes. Zero writing involved.</p>
         <div class="gallery-scroll">
-          <div class="gallery-card"><div class="gallery-img">🐉</div><div class="gallery-info"><h4>The Friendly Dragon</h4><p>A dragon who is afraid of fire learns to be brave</p><span class="gallery-style">Cartoon</span></div></div>
-          <div class="gallery-card"><div class="gallery-img">🚀</div><div class="gallery-info"><h4>Space Bunny Adventure</h4><p>A bunny builds a rocket ship from carrots</p><span class="gallery-style">Pixar 3D</span></div></div>
-          <div class="gallery-card"><div class="gallery-img">🌈</div><div class="gallery-info"><h4>The Rainbow Thief</h4><p>A sneaky cloud steals all the colors</p><span class="gallery-style">Watercolor</span></div></div>
-          <div class="gallery-card"><div class="gallery-img">🦁</div><div class="gallery-info"><h4>Leo the Brave Lion</h4><p>A shy lion cub discovers his mighty roar</p><span class="gallery-style">Storybook</span></div></div>
-          <div class="gallery-card"><div class="gallery-img">🧙</div><div class="gallery-info"><h4>The Tiny Wizard</h4><p>The smallest wizard casts the biggest spell</p><span class="gallery-style">Anime</span></div></div>
-          <div class="gallery-card"><div class="gallery-img">🦋</div><div class="gallery-info"><h4>The Butterfly Who Could Not Fly</h4><p>A wingless butterfly discovers she can soar</p><span class="gallery-style">Watercolor</span></div></div>
+          <a class="gallery-card" href="/flipbooks/69a1162f41a8640f58b3d23f/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772164611749/page-1.png" alt="The Butterfly Who Couldn't Fly"><span class="gallery-badge">5 Pages</span></div>
+            <div class="gallery-info"><h4>The Butterfly Who Couldn't Fly</h4><p>A wingless butterfly discovers she can soar</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
+          <a class="gallery-card" href="/flipbooks/69a1fda076f297a3cc8da802/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772223747337/page-1.png" alt="My Pet Dinosaur"><span class="gallery-badge">12 Pages</span></div>
+            <div class="gallery-info"><h4>My Pet Dinosaur</h4><p>A child finds a tiny dinosaur in the backyard</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
+          <a class="gallery-card" href="/flipbooks/69a1536e00ba722196822bb6/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772180191889/page-1.png" alt="Robot Goes to Kindergarten"><span class="gallery-badge">12 Pages</span></div>
+            <div class="gallery-info"><h4>Robot Goes to Kindergarten</h4><p>A friendly robot's first day at school</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
+          <a class="gallery-card" href="/flipbooks/69a19af972c10e9ed3350b42/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772198598271/page-1.png" alt="Swimming with Stars"><span class="gallery-badge">5 Pages</span></div>
+            <div class="gallery-info"><h4>Swimming with Stars</h4><p>An underwater adventure among the stars</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
+          <a class="gallery-card" href="/flipbooks/69a110d28c3ae99d25630709/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772163176401/page-1.png" alt="Penguin Goes to School"><span class="gallery-badge">9 Pages</span></div>
+            <div class="gallery-info"><h4>Penguin Goes to School</h4><p>A penguin's exciting first day of school</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
+          <a class="gallery-card" href="/flipbooks/69a2008476f297a3cc8da88e/index.html" target="_blank">
+            <div class="gallery-img"><img src="/images/1772223747337/page-4.png" alt="Volcano Best Friend"><span class="gallery-badge">5 Pages</span></div>
+            <div class="gallery-info"><h4>Volcano Best Friend</h4><p>A volcano who just wants a friend</p><span class="gallery-style">AI Generated</span><span class="gallery-link">📖 Read Flipbook →</span></div>
+          </a>
         </div>
       </div>
 
