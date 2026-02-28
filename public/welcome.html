@@ -354,7 +354,10 @@
         document.getElementById('formView').style.display = 'none';
         document.getElementById('successView').style.display = 'block';
         document.getElementById('successMsg').textContent = 
-          'Welcome ' + (data.user.name || '') + '! Your ' + data.user.plan + ' plan is active with ' + data.user.booksLimit + ' books. Let\'s create!';
+          'Welcome ' + (data.user.name || '') + '! Your ' + data.user.plan + ' plan is active with ' + data.user.booksLimit + ' books. Redirecting...';
+
+        // Auto-redirect to dashboard after 2 seconds
+        setTimeout(() => { window.location.href = '/'; }, 2000);
 
       } catch (err) {
         showMsg('Connection error. Please try again.', 'error');

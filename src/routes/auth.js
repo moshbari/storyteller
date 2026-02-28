@@ -32,7 +32,7 @@ router.post('/signup', async (req, res) => {
 
     if (!tosAgreed) return res.status(400).json({ error: 'You must agree to the Terms of Service to continue' });
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     
     // If user was auto-created by Whop, let them complete signup
     if (existingUser && existingUser.needsPasswordSetup) {
@@ -70,7 +70,7 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) return res.status(400).json({ error: 'Email not found' });
 
     // If user was created by Whop and hasn't set password yet, tell them
