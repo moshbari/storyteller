@@ -32,6 +32,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'StoryTeller is running! 🚀' });
 });
 
+// Serve welcome page at /welcome (without .html)
+app.get('/welcome', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/welcome.html'));
+});
+
+// Serve pricing page at /pricing (without .html)
+app.get('/pricing', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/pricing.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 StoryTeller running on port ${PORT}`);
 });
