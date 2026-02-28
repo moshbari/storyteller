@@ -151,7 +151,7 @@ router.post('/set-password', async (req, res) => {
   }
 });
 
-// Change password (authenticated user)
+// Change password (authenticated user — already logged in, no current password needed)
 router.post('/change-password', async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -161,15 +161,12 @@ router.post('/change-password', async (req, res) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Both current and new password required' });
-    if (newPassword.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters' });
+    const { newPassword } = req.body;
+    if (!newPassword) return res.status(400).json({ error: 'New password is required' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
 
     const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
-
-    const valid = await user.comparePassword(currentPassword);
-    if (!valid) return res.status(400).json({ error: 'Current password is incorrect' });
 
     user.password = newPassword; // Pre-save hook will hash it
     await user.save();
