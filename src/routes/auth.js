@@ -92,7 +92,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Set password for Whop-created accounts
+// Set password for Whop-created accounts OR create new account
 router.post('/set-password', async (req, res) => {
   try {
     const { email, password, name, tosAgreed } = req.body;
@@ -100,25 +100,42 @@ router.post('/set-password', async (req, res) => {
     if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
     if (!tosAgreed) return res.status(400).json({ error: 'You must agree to the Terms of Service to continue' });
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
-    if (!user) return res.status(400).json({ error: 'No account found with this email. Please purchase a plan first.' });
-    if (!user.needsPasswordSetup) return res.status(400).json({ error: 'Password already set. Please log in instead.' });
+    let user = await User.findOne({ email: email.toLowerCase().trim() });
+    
+    if (user && !user.needsPasswordSetup) {
+      return res.status(400).json({ error: 'Account already exists. Please log in instead.' });
+    }
 
-    // Update password and name
-    user.password = password; // Pre-save hook will hash it
-    user.needsPasswordSetup = false;
-    if (name && name.trim()) user.name = name.trim();
-    await user.save();
+    if (user && user.needsPasswordSetup) {
+      // Whop-created account — just set the password
+      user.password = password;
+      user.needsPasswordSetup = false;
+      if (name && name.trim()) user.name = name.trim();
+      await user.save();
+      console.log('✅ Password set for Whop buyer:', email);
+    } else {
+      // No account exists — create one (came from Whop but webhook didn't fire)
+      user = new User({
+        name: (name && name.trim()) || email.split('@')[0],
+        email: email.toLowerCase().trim(),
+        password: password,
+        plan: 'free',
+        booksCreated: 0,
+        booksLimit: 3,
+        active: true,
+        needsPasswordSetup: false
+      });
+      await user.save();
+      console.log('✅ New account created from welcome page:', email);
+    }
 
     // Record TOS agreement with IP, user agent, timestamp
     await recordTosAgreement(user, req);
 
-    console.log('✅ Password set for Whop buyer:', email);
-
     // Auto-login: return token
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ 
-      message: 'Password set! Welcome to StoryTeller! 🎉', 
+      message: 'Welcome to StoryTeller! 🎉', 
       token, 
       user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit } 
     });

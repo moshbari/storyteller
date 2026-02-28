@@ -70,19 +70,21 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   try {
     // Parse the body
     let body;
-    if (Buffer.isBuffer(req.body)) {
-      body = JSON.parse(req.body.toString());
-    } else if (typeof req.body === 'string') {
-      body = JSON.parse(req.body);
-    } else {
-      body = req.body;
+    const rawBody = Buffer.isBuffer(req.body) ? req.body.toString() : (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+    
+    console.log('📨 Whop webhook RAW:', rawBody.substring(0, 1000));
+    
+    try {
+      body = JSON.parse(rawBody);
+    } catch(e) {
+      body = req.body || {};
     }
 
-    const event = body.event || body.action;
-    const data = body.data || {};
+    const event = body.event || body.action || body.type || '';
+    const data = body.data || body;
     
-    console.log('📨 Whop webhook received:', event);
-    console.log('📦 Data:', JSON.stringify(data).substring(0, 500));
+    console.log('📨 Whop webhook event:', event);
+    console.log('📦 Keys:', Object.keys(body).join(', '));
 
     // Extract user email from various possible locations in the payload
     const email = data.email 
@@ -90,29 +92,42 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       || data.customer_email
       || data.membership?.user?.email
       || data.payment?.user?.email
+      || body.email
+      || body.user?.email
+      || body.membership?.user?.email
+      || body.membership?.email
       || null;
 
     const userName = data.user?.username 
       || data.user?.name
       || data.membership?.user?.username
+      || body.user?.username
+      || body.user?.name
       || null;
 
     // Extract product ID from various possible locations
     const productId = data.product_id
+      || data.product?.id
       || data.access_pass?.id
+      || data.membership?.product?.id
       || data.membership?.access_pass?.id
       || data.plan?.access_pass?.id
       || data.payment?.access_pass?.id
+      || body.product_id
+      || body.product?.id
+      || body.membership?.product?.id
       || null;
 
     // Also check for product in nested plan object
     const planProductId = data.plan?.product_id
       || data.membership?.plan?.product_id
+      || data.plan?.product?.id
+      || body.plan?.product_id
       || null;
 
     const finalProductId = productId || planProductId;
 
-    console.log('👤 Email:', email, '| Product:', finalProductId);
+    console.log('👤 Email:', email, '| Product:', finalProductId, '| User:', userName);
 
     // ============================================
     // HANDLE: membership_activated
@@ -212,6 +227,36 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     if (event === 'membership_cancel_at_period_end_changed') {
       console.log('⏳ Membership cancel scheduled for:', email || 'unknown');
       return res.status(200).json({ received: true, action: 'cancel_scheduled' });
+    }
+
+    // ============================================
+    // HANDLE: entry_created / entry_approved
+    // Whop may fire these for free plan signups
+    // ============================================
+    if (event === 'entry_created' || event === 'entry_approved') {
+      if (!email) {
+        console.log('⚠️ No email in entry event');
+        return res.status(200).json({ received: true, note: 'no email found' });
+      }
+
+      const user = await findOrCreateUser(email, userName);
+      const product = PRODUCT_MAP[finalProductId];
+
+      if (product && product.type === 'plan') {
+        user.plan = product.plan;
+        user.booksLimit = product.booksLimit;
+        user.booksCreated = 0;
+        if (data.id || data.membership?.id) {
+          user.whopMembershipId = data.id || data.membership?.id;
+        }
+        await user.save();
+        console.log('✅ Entry created — plan set:', email, '→', product.name);
+      } else {
+        // Even without product match, ensure user is created
+        console.log('✅ Entry created — user ensured:', email);
+      }
+
+      return res.status(200).json({ received: true, action: 'entry_processed' });
     }
 
     // ============================================
