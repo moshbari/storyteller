@@ -12,10 +12,20 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Hash password before saving (only if changed)
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Compare password method on user instance
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
 module.exports = mongoose.model('User', userSchema);
-module.exports.hashPassword = async function(password) {
-  return bcrypt.hash(password, 10);
-};
-module.exports.comparePassword = async function(password, hash) {
-  return bcrypt.compare(password, hash);
-};

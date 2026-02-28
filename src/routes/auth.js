@@ -13,12 +13,13 @@ router.post('/signup', async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ error: 'Email already registered' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashedPassword });
+    // Just pass plain password — User model pre-save hook hashes it automatically
+    const user = new User({ name, email, password });
     await user.save();
     console.log('✅ User created:', email);
 
     if (user.active === false) return res.status(403).json({ error: "Your account has been deactivated. Contact support." });
+
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ message: 'Account created!', token, user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit } });
   } catch (error) {
@@ -33,10 +34,12 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: 'Email not found' });
 
-    const valid = await bcrypt.compare(password, user.password);
+    // Use the instance method from User model
+    const valid = await user.comparePassword(password);
     if (!valid) return res.status(400).json({ error: 'Wrong password' });
 
     if (user.active === false) return res.status(403).json({ error: "Your account has been deactivated. Contact support." });
+
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ message: 'Welcome back!', token, user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit } });
   } catch (error) {
