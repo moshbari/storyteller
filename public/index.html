@@ -255,13 +255,15 @@
     .lp-subtitle { text-align:center; color:var(--muted); font-size:17px; font-weight:500; max-width:550px; margin:0 auto 48px; line-height:1.7; }
 
     /* HOW IT WORKS */
-    .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    .steps-grid { display:grid; grid-template-columns:1fr; gap:40px; max-width:700px; margin:0 auto; }
     .step-card { background:white; border-radius:24px; padding:32px 24px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.05); transition:0.4s; position:relative; }
     .step-card:hover { transform:translateY(-6px); box-shadow:0 16px 50px rgba(0,0,0,0.1); }
     .step-num { position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--coral),var(--sunset)); color:white; font-family:'Baloo 2',cursive; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px var(--glow); }
     .step-icon { font-size:48px; margin-bottom:16px; display:block; }
     .step-card h3 { font-size:20px; margin-bottom:8px; }
     .step-card p { font-size:14px; color:var(--muted); line-height:1.7; font-weight:500; }
+    .step-mockup { margin-top:24px; background:rgba(26,26,46,0.04); border-radius:16px; padding:12px; border:1px solid rgba(0,0,0,0.04); }
+    .step-mockup svg { width:100%; height:auto; display:block; border-radius:10px; }
 
     /* GALLERY */
     .gallery-scroll { display:flex; gap:20px; overflow-x:auto; padding:0 20px 20px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
@@ -334,7 +336,7 @@
     .compare-table tr:last-child td { border-bottom:none; }
 
     @media(max-width:768px) {
-      .steps-grid { grid-template-columns:1fr; max-width:360px; margin:0 auto; }
+      .steps-grid { max-width:100%; }
       .features-grid { grid-template-columns:1fr; }
       .testi-grid { grid-template-columns:1fr; max-width:400px; margin:0 auto; }
       .compare-table th, .compare-table td { padding:10px 12px; font-size:12px; }
@@ -377,9 +379,121 @@
           <h2 class="lp-title">Three Clicks. <span class="grad">Done.</span></h2>
           <p class="lp-subtitle">No writing. No prompting. No design skills. Just click.</p>
           <div class="steps-grid">
-            <div class="step-card"><span class="step-num">1</span><span class="step-icon">🖱️</span><h3>Click a Story Idea</h3><p>Browse 100+ done-for-you story ideas and tap one you like. Don't want to choose? Hit the shuffle button and let the agent pick everything for you.</p></div>
-            <div class="step-card"><span class="step-num">2</span><span class="step-icon">🤖</span><h3>Click "Create Book"</h3><p>One button. Three AI agents activate — the writer crafts the story, the illustrator paints every page, the assembler builds your book. Watch them work live.</p></div>
-            <div class="step-card"><span class="step-num">3</span><span class="step-icon">📥</span><h3>Click "Download"</h3><p>Your finished book is ready. Grab it as PDF, Amazon KDP format, image pack, or shareable flipbook link. Full commercial rights — sell it anywhere.</p></div>
+
+            <div class="step-card"><span class="step-num">1</span><span class="step-icon">🖱️</span><h3>Click a Story Idea</h3><p>Browse 100+ done-for-you story ideas and tap one you like. Don't want to choose? Hit the shuffle button and let the agent pick everything for you.</p>
+              <div class="step-mockup">
+                <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="700" height="340" rx="12" fill="#1A1A2E"/>
+                  <rect width="700" height="30" rx="12" fill="#12121F"/><rect x="0" y="22" width="700" height="8" fill="#12121F"/>
+                  <circle cx="18" cy="15" r="5" fill="#FF6B6B" opacity="0.8"/><circle cx="34" cy="15" r="5" fill="#FFD93D" opacity="0.8"/><circle cx="50" cy="15" r="5" fill="#6BCB77" opacity="0.8"/>
+                  <text x="350" y="60" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="800" fill="white">✨ Create a New Book</text>
+                  <text x="350" y="78" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#8395A7">Pick a done-for-you idea — no writing needed</text>
+                  <rect x="30" y="96" width="310" height="48" rx="12" fill="rgba(255,107,107,0.08)" stroke="#FF6B6B" stroke-width="2"/>
+                  <text x="44" y="115" font-family="sans-serif" font-size="11" font-weight="700" fill="white">🐉 The Friendly Dragon</text>
+                  <text x="44" y="131" font-family="sans-serif" font-size="9" fill="#8395A7">A dragon afraid of fire learns to be brave</text>
+                  <rect x="360" y="96" width="310" height="48" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="374" y="115" font-family="sans-serif" font-size="11" font-weight="700" fill="white">🚀 Space Bunny Adventure</text>
+                  <text x="374" y="131" font-family="sans-serif" font-size="9" fill="#8395A7">A bunny builds a rocket ship from carrots</text>
+                  <rect x="30" y="156" width="310" height="48" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="44" y="175" font-family="sans-serif" font-size="11" font-weight="700" fill="white">🌈 The Rainbow Thief</text>
+                  <text x="44" y="191" font-family="sans-serif" font-size="9" fill="#8395A7">A sneaky cloud steals all the colors</text>
+                  <rect x="360" y="156" width="310" height="48" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="374" y="175" font-family="sans-serif" font-size="11" font-weight="700" fill="white">🦁 Leo the Brave Lion</text>
+                  <text x="374" y="191" font-family="sans-serif" font-size="9" fill="#8395A7">A shy lion cub discovers his mighty roar</text>
+                  <rect x="240" y="222" width="220" height="36" rx="18" fill="rgba(86,204,242,0.1)" stroke="#56CCF2" stroke-width="1.5"/>
+                  <text x="350" y="245" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#56CCF2">🔀 Shuffle New Ideas</text>
+                  <text x="30" y="286" font-family="sans-serif" font-size="9" font-weight="700" fill="#64748B" letter-spacing="1">ART STYLE</text>
+                  <rect x="30" y="296" width="76" height="28" rx="14" fill="rgba(255,107,107,0.15)" stroke="#FF6B6B" stroke-width="1.5"/>
+                  <text x="68" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="600" fill="#FF6B6B">Cartoon</text>
+                  <rect x="116" y="296" width="86" height="28" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="159" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="600" fill="#8395A7">Watercolor</text>
+                  <rect x="212" y="296" width="86" height="28" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="255" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="600" fill="#8395A7">Storybook</text>
+                  <rect x="308" y="296" width="70" height="28" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <text x="343" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="600" fill="#8395A7">Anime</text>
+                  <defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="100%" stop-color="#FF8E53"/></linearGradient></defs>
+                  <rect x="510" y="290" width="160" height="36" rx="18" fill="url(#bg1)"/>
+                  <text x="590" y="313" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="800" fill="white">Create Book ✨</text>
+                  <g transform="translate(320,120)"><path d="M0,0 L4,14 L8,10 L14,18 L18,16 L12,8 L16,6 Z" fill="white" stroke="#1A1A2E" stroke-width="1"/></g>
+                </svg>
+              </div>
+            </div>
+
+            <div class="step-card"><span class="step-num">2</span><span class="step-icon">🤖</span><h3>Click "Create Book"</h3><p>One button. Three AI agents activate — the writer crafts the story, the illustrator paints every page, the assembler builds your book. Watch them work live.</p>
+              <div class="step-mockup">
+                <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="wbg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0F0C29"/><stop offset="50%" stop-color="#302B63"/><stop offset="100%" stop-color="#24243E"/></linearGradient>
+                    <linearGradient id="aact" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="100%" stop-color="#FF8E53"/></linearGradient>
+                    <linearGradient id="pbar" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="50%" stop-color="#FF8E53"/><stop offset="100%" stop-color="#FFD93D"/></linearGradient>
+                  </defs>
+                  <rect width="700" height="400" rx="12" fill="url(#wbg)"/>
+                  <circle cx="100" cy="60" r="3" fill="#FF6B6B" opacity="0.3"/><circle cx="600" cy="90" r="4" fill="#56CCF2" opacity="0.25"/><circle cx="160" cy="350" r="3" fill="#FFD93D" opacity="0.3"/><circle cx="540" cy="330" r="2.5" fill="#BB6BD9" opacity="0.25"/><circle cx="300" cy="40" r="2" fill="#6BCB77" opacity="0.3"/>
+                  <text x="350" y="42" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="800" fill="white">🤖 AI Agents at Work</text>
+                  <text x="350" y="62" text-anchor="middle" font-family="sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">Building "The Friendly Dragon"</text>
+                  <rect x="90" y="84" width="520" height="68" rx="16" fill="rgba(107,203,119,0.08)" stroke="rgba(107,203,119,0.3)" stroke-width="1"/>
+                  <rect x="108" y="98" width="42" height="42" rx="12" fill="rgba(107,203,119,0.25)"/>
+                  <text x="129" y="126" text-anchor="middle" font-size="22">✍️</text>
+                  <text x="168" y="116" font-family="sans-serif" font-size="15" font-weight="700" fill="white">Story Writer Agent</text>
+                  <text x="168" y="134" font-family="sans-serif" font-size="11" fill="#6BCB77">Completed ✓</text>
+                  <text x="574" y="122" text-anchor="middle" font-size="20">✅</text>
+                  <rect x="90" y="164" width="520" height="68" rx="16" fill="rgba(255,107,107,0.06)" stroke="rgba(255,107,107,0.35)" stroke-width="1.5"/>
+                  <rect x="88" y="162" width="524" height="72" rx="18" fill="none" stroke="rgba(255,107,107,0.1)" stroke-width="3"/>
+                  <rect x="108" y="178" width="42" height="42" rx="12" fill="url(#aact)"/>
+                  <text x="129" y="206" text-anchor="middle" font-size="22">🎨</text>
+                  <text x="168" y="196" font-family="sans-serif" font-size="15" font-weight="700" fill="white">Illustration Agent</text>
+                  <text x="168" y="214" font-family="sans-serif" font-size="11" fill="#FF6B6B">Painting page 5 of 9...</text>
+                  <circle cx="292" cy="210" r="2.5" fill="#FF6B6B" opacity="0.8"/><circle cx="301" cy="210" r="2.5" fill="#FF6B6B" opacity="0.5"/><circle cx="310" cy="210" r="2.5" fill="#FF6B6B" opacity="0.3"/>
+                  <rect x="90" y="244" width="520" height="68" rx="16" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                  <rect x="108" y="258" width="42" height="42" rx="12" fill="rgba(255,255,255,0.06)"/>
+                  <text x="129" y="286" text-anchor="middle" font-size="22">📚</text>
+                  <text x="168" y="276" font-family="sans-serif" font-size="15" font-weight="700" fill="rgba(255,255,255,0.5)">Book Assembly Agent</text>
+                  <text x="168" y="294" font-family="sans-serif" font-size="11" fill="rgba(255,255,255,0.3)">Waiting...</text>
+                  <rect x="90" y="336" width="520" height="7" rx="3.5" fill="rgba(255,255,255,0.08)"/>
+                  <rect x="90" y="336" width="316" height="7" rx="3.5" fill="url(#pbar)"/>
+                  <circle cx="406" cy="339.5" r="5" fill="white" opacity="0.9"/>
+                  <text x="90" y="368" font-family="sans-serif" font-size="12" fill="rgba(255,255,255,0.4)" font-weight="600">Elapsed: 0:47</text>
+                  <text x="610" y="368" text-anchor="end" font-family="sans-serif" font-size="18" font-weight="800" fill="white">61%</text>
+                  <text x="350" y="392" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#FFD93D" opacity="0.7">"The Friendly Dragon"</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="step-card"><span class="step-num">3</span><span class="step-icon">📥</span><h3>Click "Download"</h3><p>Your finished book is ready. Grab it as PDF, Amazon KDP format, image pack, or shareable flipbook link. Full commercial rights — sell it anywhere.</p>
+              <div class="step-mockup">
+                <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="700" height="380" rx="12" fill="#FFF9F0"/>
+                  <rect width="700" height="30" rx="12" fill="#F0EDE6"/><rect x="0" y="22" width="700" height="8" fill="#F0EDE6"/>
+                  <circle cx="18" cy="15" r="5" fill="#FF6B6B" opacity="0.8"/><circle cx="34" cy="15" r="5" fill="#FFD93D" opacity="0.8"/><circle cx="50" cy="15" r="5" fill="#6BCB77" opacity="0.8"/>
+                  <text x="350" y="58" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="800" fill="#2D3436">🐉 The Friendly Dragon</text>
+                  <rect x="130" y="72" width="440" height="220" rx="14" fill="white" stroke="#E8E4DC" stroke-width="1"/>
+                  <rect x="146" y="86" width="200" height="192" rx="10" fill="#FFF5F5"/>
+                  <text x="246" y="174" text-anchor="middle" font-size="56">🐉</text>
+                  <text x="246" y="204" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#8395A7">AI-Generated Illustration</text>
+                  <text x="368" y="104" font-family="sans-serif" font-size="12" font-weight="700" fill="#2D3436">Chapter 1: A Spark of Fear</text>
+                  <rect x="368" y="114" width="180" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="126" width="170" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="368" y="138" width="185" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="150" width="150" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="368" y="162" width="180" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="174" width="160" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="368" y="186" width="185" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="198" width="130" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="368" y="216" width="180" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="228" width="165" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="368" y="240" width="185" height="5" rx="2.5" fill="#E8E4DC"/><rect x="368" y="252" width="90" height="5" rx="2.5" fill="#E8E4DC"/>
+                  <rect x="305" y="264" width="90" height="20" rx="10" fill="white" stroke="#E8E4DC" stroke-width="1"/>
+                  <text x="350" y="278" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#8395A7">Page 1 of 9</text>
+                  <circle cx="310" cy="308" r="5" fill="#FF6B6B"/><circle cx="326" cy="308" r="5" fill="#E8E4DC"/><circle cx="342" cy="308" r="5" fill="#E8E4DC"/><circle cx="358" cy="308" r="5" fill="#E8E4DC"/><circle cx="374" cy="308" r="5" fill="#E8E4DC"/><circle cx="390" cy="308" r="5" fill="#E8E4DC"/>
+                  <defs><linearGradient id="dl1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="100%" stop-color="#FF8E53"/></linearGradient></defs>
+                  <rect x="70" y="332" width="130" height="36" rx="10" fill="url(#dl1)"/>
+                  <text x="135" y="355" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="white">📄 PDF</text>
+                  <rect x="212" y="332" width="130" height="36" rx="10" fill="#2F80ED"/>
+                  <text x="277" y="355" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="white">📕 Amazon KDP</text>
+                  <rect x="354" y="332" width="130" height="36" rx="10" fill="#BB6BD9"/>
+                  <text x="419" y="355" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="white">🖼️ Images</text>
+                  <rect x="496" y="332" width="130" height="36" rx="10" fill="#6BCB77"/>
+                  <text x="561" y="355" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="white">📱 Flipbook</text>
+                  <g transform="translate(180,358)"><path d="M0,0 L4,14 L8,10 L14,18 L18,16 L12,8 L16,6 Z" fill="#2D3436" stroke="white" stroke-width="1"/></g>
+                </svg>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
