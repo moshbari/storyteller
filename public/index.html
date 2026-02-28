@@ -834,7 +834,7 @@
     function selectOpt(el,group){el.parentElement.querySelectorAll('.opt-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
     function getSelectedOpt(id){const el=document.querySelector('#'+id+' .opt-chip.selected');return el?el.textContent.trim():'';}
     function chooseAllForMe(){loadIdeas();setTimeout(()=>{const chips=document.querySelectorAll('.idea-chip');if(chips.length>0){const pick=chips[Math.floor(Math.random()*chips.length)];pick.click();}const artChips=document.querySelectorAll('#artChips .opt-chip');const moodChips=document.querySelectorAll('#moodChips .opt-chip');artChips[Math.floor(Math.random()*artChips.length)].click();moodChips[Math.floor(Math.random()*moodChips.length)].click();showToast('✨ All picked for you! Hit Generate!');},100);}
-    function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+    function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('landingSections').style.display=(id==='heroSection')?'block':'none';}
     function goHome(){if(token){showSection('dashSection');}else{showSection('heroSection');}}
     function openModal(){document.getElementById('authModal').classList.add('open');}
     function closeModal(){document.getElementById('authModal').classList.remove('open');}
