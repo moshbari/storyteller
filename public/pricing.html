@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — StoryTeller</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF8F0;
+      --warm: #FFF1E6;
+      --peach: #FFD6B0;
+      --coral: #FF6B6B;
+      --sunset: #FF8E53;
+      --purple: #7C5CFC;
+      --purple-light: #A78BFA;
+      --mint: #34D399;
+      --mint-light: #A7F3D0;
+      --sky: #38BDF8;
+      --dark: #1E1B3A;
+      --dark2: #2D2A4A;
+      --text: #3D3556;
+      --muted: #8B83A8;
+      --white: #FFFFFF;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,.price-amount,.tier-name,.pack-price { font-family: 'Baloo 2', cursive; }
+
+    /* NAV */
+    .nav { position: relative; z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav-logo {
+      font-family: 'Baloo 2', cursive;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--coral);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--purple); }
+    .nav-links { display: flex; gap: 12px; align-items: center; }
+    .nav-link {
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .nav-link.ghost { color: var(--text); }
+    .nav-link.ghost:hover { background: var(--warm); }
+    .nav-link.primary { background: var(--coral); color: white; }
+    .nav-link.primary:hover { background: var(--sunset); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero { position: relative;
+      text-align: center;
+      padding: 60px 24px 40px;
+      position: relative;
+    }
+    .hero::before { pointer-events: none;
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: -10%;
+      width: 120%;
+      height: 300px;
+      background: radial-gradient(ellipse at 30% 50%, rgba(255,107,107,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 50%, rgba(124,92,252,0.08) 0%, transparent 60%);
+      z-index: 0;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--mint-light), #D1FAE5);
+      color: #065F46;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--coral), var(--sunset));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--mint);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* PRICING GRID */
+    .pricing-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    /* TIER CARD */
+    .tier-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 36px 30px;
+      position: relative;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: cardIn 0.5s ease forwards;
+    }
+    .tier-card:nth-child(1) { animation-delay: 0.1s; }
+    .tier-card:nth-child(2) { animation-delay: 0.2s; }
+    .tier-card:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes cardIn { to { opacity: 1; transform: translateY(0); } }
+    .tier-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .tier-card.featured {
+      border-color: var(--purple);
+      box-shadow: 0 8px 40px rgba(124,92,252,0.15);
+      transform: scale(1.03);
+    }
+    .tier-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+    .tier-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--purple), var(--purple-light));
+      color: white;
+      font-family: 'Baloo 2', cursive;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 18px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(124,92,252,0.3);
+    }
+    .tier-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .price-amount {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1;
+    }
+    .price-label {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .tier-credits {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--mint);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tier-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+    .tier-features li {
+      padding: 7px 0;
+      font-size: 15px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+    .tier-features li .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .check-green { background: #ECFDF5; color: var(--mint); }
+    .check-gray { background: #F3F4F6; color: #D1D5DB; }
+    .tier-cta {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-family: 'Baloo 2', cursive;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      text-align: center;
+      text-decoration: none;
+    }
+    .cta-free { background: var(--warm); color: var(--text); }
+    .cta-free:hover { background: var(--peach); }
+    .cta-featured { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; box-shadow: 0 4px 16px rgba(124,92,252,0.3); }
+    .cta-featured:hover { box-shadow: 0 6px 24px rgba(124,92,252,0.4); transform: translateY(-1px); }
+    .cta-premium { background: linear-gradient(135deg, var(--coral), var(--sunset)); color: white; box-shadow: 0 4px 16px rgba(255,107,107,0.25); }
+    .cta-premium:hover { box-shadow: 0 6px 24px rgba(255,107,107,0.35); transform: translateY(-1px); }
+
+    /* CREDIT PACKS */
+    .packs-section {
+      margin-bottom: 60px;
+    }
+    .packs-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .packs-title h2 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .packs-subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .packs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .pack-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 24px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.03);
+      transition: 0.3s;
+      opacity: 0;
+      animation: cardIn 0.5s ease forwards;
+    }
+    .pack-card:nth-child(1) { animation-delay: 0.15s; }
+    .pack-card:nth-child(2) { animation-delay: 0.25s; }
+    .pack-card:nth-child(3) { animation-delay: 0.35s; }
+    .pack-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+    .pack-card.featured { border-color: var(--sunset); box-shadow: 0 4px 24px rgba(255,142,83,0.12); }
+    .pack-left { display: flex; align-items: center; gap: 16px; }
+    .pack-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .pack-icon-1 { background: #EEF2FF; }
+    .pack-icon-2 { background: #FFF7ED; }
+    .pack-icon-3 { background: #ECFDF5; }
+    .pack-name { font-weight: 800; font-size: 16px; color: var(--dark); margin-bottom: 2px; }
+    .pack-detail { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .pack-savings { color: var(--mint); font-weight: 800; margin-left: 4px; }
+    .pack-right { display: flex; align-items: center; gap: 14px; }
+    .pack-price { font-size: 26px; font-weight: 800; color: var(--dark); }
+    .pack-buy {
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 2px solid var(--peach);
+      background: transparent;
+      color: var(--sunset);
+      font-family: 'Baloo 2', cursive;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .pack-buy:hover { background: var(--sunset); color: white; border-color: var(--sunset); }
+
+    /* TRUST SECTION */
+    .trust {
+      text-align: center;
+      padding: 40px 24px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .trust-items { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 20px; }
+    .trust-item { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .trust-icon { font-size: 20px; }
+    .trust-note { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 30px 24px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      font-size: 18px;
+      color: var(--muted);
+    }
+    .loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--peach);
+      border-top-color: var(--coral);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* FLOATING SHAPES */
+    .shape { pointer-events: none;
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.5;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .shape-1 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,107,107,0.1), transparent); top: 100px; left: -50px; }
+    .shape-2 { width: 150px; height: 150px; background: radial-gradient(circle, rgba(124,92,252,0.1), transparent); top: 200px; right: -30px; }
+    .shape-3 { width: 180px; height: 180px; background: radial-gradient(circle, rgba(52,211,153,0.08), transparent); bottom: 200px; left: 10%; }
+
+    @media(max-width:768px) {
+      .tiers-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+      .tier-card.featured { transform: none; }
+      .tier-card.featured:hover { transform: translateY(-4px); }
+      .packs-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+      .trust-items { gap: 20px; }
+      .nav { padding: 16px 20px; }
+      .pack-right { flex-direction: column; gap: 6px; }
+    }
+  
+    .site-footer { background:#1A1A2E; padding:40px 24px 20px; margin-top:60px; position:relative; z-index:1; }
+    .footer-inner { max-width:800px; margin:0 auto; text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:16px; }
+    .footer-links a { color:#8395A7; font-size:13px; font-weight:600; text-decoration:none; transition:0.3s; }
+    .footer-links a:hover { color:#FF6B6B; }
+    .footer-copy { color:#8395A7; font-size:13px; margin-bottom:16px; font-weight:500; }
+    .footer-legal { max-width:700px; margin:0 auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.06); }
+    .footer-legal p { color:#5A6577; font-size:11px; line-height:1.7; margin-bottom:10px; }
+
+  </style>
+</head>
+<body>
+
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <div class="shape shape-3"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">StoryTeller <span>✨</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/" class="nav-link ghost">Home</a>
+      <a href="/" class="nav-link primary">Start Creating</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">✨ 1 credit = 1 complete book</div>
+    <h1>Create magical stories<br>for <span class="highlight">less than a coffee</span></h1>
+    <p>Start with 3 free books. Upgrade anytime to unlock more styles, pages, and downloads.</p>
+    <div class="hero-note">🎨 AI-powered illustrations included in every book</div>
+  </section>
+
+  <!-- PRICING -->
+  <div class="pricing-wrap">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Loading pricing...
+    </div>
+
+    <!-- TIERS -->
+    <div class="tiers-grid" id="tiersGrid" style="display:none;"></div>
+
+    <!-- CREDIT PACKS -->
+    <div class="packs-section" id="packsSection" style="display:none;">
+      <div class="packs-title"><h2>📦 Need More Books?</h2></div>
+      <p class="packs-subtitle">Already have an account? Grab a credit top-up anytime.</p>
+      <div class="packs-grid" id="packsGrid"></div>
+    </div>
+
+    <!-- TRUST -->
+    <div class="trust">
+      <div class="trust-items">
+        <div class="trust-item"><span class="trust-icon">🔒</span> Secure Payment</div>
+        <div class="trust-item"><span class="trust-icon">⚡</span> Instant Access</div>
+        <div class="trust-item"><span class="trust-icon">💰</span> One-Time Payment</div>
+        <div class="trust-item"><span class="trust-icon">🚫</span> No Subscription</div>
+      </div>
+      <p class="trust-note">Pay once, create anytime. Your credits never expire. Download your books as PDF, images, or Amazon KDP-ready format.</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://winarzapps.com/privacy-policy/" target="_blank">Privacy Policy</a>
+        <a href="https://winarzapps.com/terms-of-service/" target="_blank">Terms & Conditions</a>
+        <a href="https://winarzapps.com/earning-disclaimer" target="_blank">Earnings Disclaimer</a>
+      </div>
+      <p class="footer-copy">2026 Mosh Bari - Copyright&copy; 2025. All Rights Reserved.</p>
+      <div class="footer-legal">
+        <p>This site is not a part of the Facebook website or Facebook Inc. Additionally, This site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.</p>
+        <p>*Earnings and income representations made by Mosh Bari, Mosh Bari's agency, and Mosh Bari's agency and their advertisers/sponsors (collectively, "Mosh Bari's agency") are aspirational statements only of your earnings potential. These results are not typical and results will vary. The results on this page are OUR results and from years of testing. We can in NO way guarantee you will get similar results.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const packIcons = ['📚', '📖', '🎁'];
+    const packIconClasses = ['pack-icon-1', 'pack-icon-2', 'pack-icon-3'];
+
+    async function loadPricing() {
+      try {
+        const r = await fetch('/api/admin/public/pricing');
+        const d = await r.json();
+        if (!d.success) return;
+
+        document.getElementById('loading').style.display = 'none';
+
+        // RENDER TIERS
+        const tiersGrid = document.getElementById('tiersGrid');
+        tiersGrid.style.display = 'grid';
+
+        tiersGrid.innerHTML = d.tiers.map((t, idx) => {
+          const isFeatured = t.highlight;
+          const isFree = t.price === 0;
+          const badge = t.badge ? '<div class="tier-badge">' + t.badge + '</div>' : '';
+          const features = (t.features || []).map(f => 
+            '<li><span class="check check-green">✓</span>' + f + '</li>'
+          ).join('');
+
+          let ctaClass = 'cta-free';
+          let ctaText = 'Get Started Free';
+          if (isFeatured) { ctaClass = 'cta-featured'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
+          else if (!isFree) { ctaClass = 'cta-premium'; ctaText = 'Get ' + t.name + ' — $' + t.price; }
+
+          return '<div class="tier-card ' + (isFeatured ? 'featured' : '') + '">' +
+            badge +
+            '<div class="tier-name">' + t.name + '</div>' +
+            '<div class="price-row"><span class="price-amount">$' + t.price + '</span><span class="price-label">one-time</span></div>' +
+            '<div class="tier-credits">📚 ' + t.credits + ' book' + (t.credits > 1 ? 's' : '') + ' included</div>' +
+            '<ul class="tier-features">' + features + '</ul>' +
+            '<a href="/" class="tier-cta ' + ctaClass + '">' + ctaText + '</a>' +
+            '</div>';
+        }).join('');
+
+        // RENDER CREDIT PACKS
+        if (d.packs && d.packs.length > 0) {
+          document.getElementById('packsSection').style.display = 'block';
+          const packsGrid = document.getElementById('packsGrid');
+
+          packsGrid.innerHTML = d.packs.map((p, idx) => {
+            const icon = packIcons[idx % packIcons.length];
+            const iconClass = packIconClasses[idx % packIconClasses.length];
+            const isFeatured = p.highlight;
+            const savings = p.savings ? '<span class="pack-savings">' + p.savings + '</span>' : '';
+
+            return '<div class="pack-card ' + (isFeatured ? 'featured' : '') + '">' +
+              '<div class="pack-left">' +
+                '<div class="pack-icon ' + iconClass + '">' + icon + '</div>' +
+                '<div><div class="pack-name">' + p.name + '</div><div class="pack-detail">' + p.credits + ' books' + savings + '</div></div>' +
+              '</div>' +
+              '<div class="pack-right">' +
+                '<div class="pack-price">$' + p.price + '</div>' +
+                '<button class="pack-buy" onclick="window.location.href=\'/\'">Buy Now</button>' +
+              '</div>' +
+              '</div>';
+          }).join('');
+        }
+
+      } catch (e) {
+        document.getElementById('loading').innerHTML = '<p>Unable to load pricing. Please refresh the page.</p>';
+        console.error('Pricing error:', e);
+      }
+    }
+
+    loadPricing();
+
+    // Check login and update nav + CTA buttons
+    const token = localStorage.getItem('st_token');
+    const user = JSON.parse(localStorage.getItem('st_user') || 'null');
+    if (token && user) {
+      document.getElementById('navLinks').innerHTML =
+        '<a href="/" class="nav-link ghost">Home</a>' +
+        '<span style="font-size:14px;font-weight:700;color:var(--text);">' + (user.name || '') + '</span>' +
+        '<a href="/" class="nav-link primary">Go to Dashboard</a>';
+    }
+  </script>
+</body>
+</html>

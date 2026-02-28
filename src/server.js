@@ -6,6 +6,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/books');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -20,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'StoryTeller is running! 🚀' });

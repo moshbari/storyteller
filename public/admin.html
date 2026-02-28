@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoryTeller Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0B0E14;--surface:#12161F;--surface2:#1A1F2E;--border:#252B3B;--text:#E8ECF4;--muted:#6B7A99;--accent:#6C5CE7;--accent2:#A29BFE;--green:#00D68F;--red:#FF6B6B;--orange:#FDCB6E;--blue:#0984E3;--pink:#FD79A8;--radius:14px; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    h1,h2,h3,.stat-val,.tab-btn{font-family:'Space Grotesk',sans-serif;}
+
+    .login-screen{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
+    .login-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;}
+    .login-box h1{font-size:24px;margin-bottom:6px;}
+    .login-box .sub{color:var(--muted);margin-bottom:28px;font-size:14px;}
+    .login-box input{width:100%;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;margin-bottom:14px;}
+    .login-box input:focus{outline:none;border-color:var(--accent);}
+    .login-box .btn-login{width:100%;padding:14px;background:var(--accent);border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;}
+    .login-box .btn-login:hover{background:var(--accent2);}
+    .login-err{color:var(--red);font-size:13px;margin-bottom:10px;display:none;}
+
+    .app{display:none;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;}
+    .topbar h1{font-size:20px;display:flex;align-items:center;gap:10px;}
+    .topbar h1 span{color:var(--accent2);}
+    .topbar-right{display:flex;align-items:center;gap:14px;}
+    .topbar-right .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+    .btn-sm{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent);}
+    .content{max-width:1100px;margin:0 auto;padding:28px 20px;}
+
+    .tabs{display:flex;gap:6px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:4px;border:1px solid var(--border);}
+    .tab-btn{padding:10px 20px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;}
+    .tab-btn.active{background:var(--accent);color:white;}
+    .tab-btn:hover:not(.active){color:var(--text);}
+    .tab-panel{display:none;animation:fadeIn 0.3s ease;}
+    .tab-panel.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+    .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0;}
+    .stat-card:nth-child(1)::after{background:var(--accent);}.stat-card:nth-child(2)::after{background:var(--green);}.stat-card:nth-child(3)::after{background:var(--orange);}.stat-card:nth-child(4)::after{background:var(--blue);}
+    .stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;}
+    .stat-val{font-size:32px;font-weight:700;line-height:1;margin-bottom:4px;}
+    .stat-sub{font-size:12px;color:var(--muted);}
+    .stat-sub .up{color:var(--green);}
+
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+    .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+    .detail-card h3{font-size:15px;margin-bottom:14px;color:var(--muted);}
+    .detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+    .detail-row:last-child{border:none;}
+    .detail-row .label{font-size:14px;}.detail-row .value{font-size:14px;font-weight:700;}
+    .bar-row{margin-bottom:12px;}.bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;}
+    .bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:4px;transition:width 0.8s ease;}
+    .bar-fill.gemini{background:var(--green);}.bar-fill.flux{background:var(--orange);}
+
+    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+    .table-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);}
+    .table-header h3{font-size:15px;}
+    .table-search{padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;width:220px;}
+    .table-search:focus{outline:none;border-color:var(--accent);}
+    table{width:100%;border-collapse:collapse;}
+    th{text-align:left;padding:12px 20px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;border-bottom:1px solid var(--border);}
+    td{padding:12px 20px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:hover td{background:rgba(108,92,231,0.04);}
+    tr.deactivated td{opacity:0.45;}
+    .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;}
+    .badge-free{background:rgba(107,122,153,0.15);color:var(--muted);}
+    .badge-basic{background:rgba(9,132,227,0.15);color:var(--blue);}
+    .badge-pro{background:rgba(108,92,231,0.15);color:var(--accent2);}
+    .badge-completed{background:rgba(0,214,143,0.15);color:var(--green);}
+    .badge-failed{background:rgba(255,107,107,0.15);color:var(--red);}
+    .badge-gemini{background:rgba(0,214,143,0.12);color:var(--green);}
+    .badge-flux{background:rgba(253,203,110,0.12);color:var(--orange);}
+    .badge-active{background:rgba(0,214,143,0.15);color:var(--green);}
+    .badge-inactive{background:rgba(255,107,107,0.15);color:var(--red);}
+    .action-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin:2px;}
+    .action-btn:hover{border-color:var(--red);color:var(--red);}
+    .action-btn.edit:hover{border-color:var(--accent);color:var(--accent);}
+    .action-btn.pw:hover{border-color:var(--orange);color:var(--orange);}
+    .action-btn.toggle-on:hover{border-color:var(--green);color:var(--green);}
+    .user-avatar{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;margin-right:10px;vertical-align:middle;}
+
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:200;display:none;}
+    .toast.success{border-color:var(--green);color:var(--green);}
+    .toast.error{border-color:var(--red);color:var(--red);}
+
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;justify-content:center;align-items:center;padding:20px;}
+    .modal-bg.open{display:flex;}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+    .modal h3{margin-bottom:18px;font-size:18px;}
+    .modal label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:600;}
+    .modal select,.modal input[type="number"],.modal input[type="password"],.modal input[type="text"]{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:14px;}
+    .modal textarea{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:14px;min-height:80px;resize:vertical;}
+    .modal select:focus,.modal input:focus,.modal textarea:focus{outline:none;border-color:var(--accent);}
+    .modal-btns{display:flex;gap:10px;margin-top:6px;}
+    .modal-btns .btn{flex:1;padding:10px;border-radius:8px;border:none;font-weight:700;font-size:14px;cursor:pointer;font-family:'Space Grotesk',sans-serif;}
+    .modal-btns .btn-cancel{background:var(--surface2);color:var(--muted);}
+    .modal-btns .btn-save{background:var(--accent);color:white;}
+    .modal-btns .btn-save:hover{background:var(--accent2);}
+    .modal-info{font-size:13px;color:var(--muted);margin-bottom:14px;padding:10px;background:var(--surface2);border-radius:8px;}
+    .check-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:14px;}
+    .check-row input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .field-hint{font-size:11px;color:var(--muted);margin-top:-10px;margin-bottom:12px;}
+
+    /* PRICING CARDS */
+    .pricing-section{margin-bottom:32px;}
+    .pricing-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+    .pricing-section-header h3{font-size:17px;}
+    .btn-add{padding:8px 18px;border-radius:8px;border:none;background:var(--accent);color:white;font-size:13px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;}
+    .btn-add:hover{background:var(--accent2);}
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+    .pricing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative;}
+    .pricing-card.highlighted{border-color:var(--accent);box-shadow:0 0 20px rgba(108,92,231,0.15);}
+    .pricing-card.disabled{opacity:0.5;}
+    .pricing-card .card-badge{position:absolute;top:-10px;right:16px;background:var(--accent);color:white;font-size:11px;font-weight:700;padding:3px 12px;border-radius:6px;}
+    .pricing-card .card-name{font-size:20px;font-weight:700;font-family:'Space Grotesk',sans-serif;margin-bottom:4px;}
+    .pricing-card .card-price{font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--accent2);margin-bottom:4px;}
+    .pricing-card .card-price span{font-size:14px;color:var(--muted);font-weight:400;}
+    .pricing-card .card-credits{font-size:14px;color:var(--green);margin-bottom:12px;font-weight:600;}
+    .pricing-card .card-features{list-style:none;margin-bottom:16px;}
+    .pricing-card .card-features li{font-size:13px;color:var(--muted);padding:4px 0;padding-left:20px;position:relative;}
+    .pricing-card .card-features li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;}
+    .pricing-card .card-meta{font-size:12px;color:var(--muted);margin-bottom:12px;padding:8px;background:var(--surface2);border-radius:8px;}
+    .pricing-card .card-meta span{display:block;margin-bottom:2px;}
+    .pricing-card .card-actions{display:flex;gap:8px;}
+    .pricing-card .card-actions button{flex:1;}
+
+    /* PACK CARDS */
+    .pack-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;justify-content:space-between;align-items:center;}
+    .pack-card.highlighted{border-color:var(--orange);}
+    .pack-card.disabled{opacity:0.5;}
+    .pack-left{display:flex;align-items:center;gap:16px;}
+    .pack-icon{width:48px;height:48px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .pack-info .pack-name{font-weight:700;font-size:15px;margin-bottom:2px;}
+    .pack-info .pack-detail{font-size:13px;color:var(--muted);}
+    .pack-info .pack-detail .savings{color:var(--green);font-weight:600;margin-left:6px;}
+    .pack-right{display:flex;align-items:center;gap:10px;}
+    .pack-price{font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--accent2);margin-right:12px;}
+    .packs-grid{display:flex;flex-direction:column;gap:12px;}
+
+    @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);}.detail-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;}.field-row{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h1>🔒 Admin Panel</h1>
+      <p class="sub">StoryTeller Dashboard</p>
+      <div class="login-err" id="loginErr">Wrong password</div>
+      <input type="password" id="adminPw" placeholder="Admin password" onkeydown="if(event.key==='Enter')adminLogin()">
+      <button class="btn-login" onclick="adminLogin()">Access Dashboard</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="app" id="app">
+    <div class="topbar">
+      <h1>📊 StoryTeller <span>Admin</span></h1>
+      <div class="topbar-right">
+        <div class="live-dot"></div>
+        <span style="font-size:13px;color:var(--muted)">Live</span>
+        <button class="btn-sm" onclick="loadAll()">↻ Refresh</button>
+        <button class="btn-sm" onclick="adminLogout()">Log Out</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-val" id="totalUsers">—</div><div class="stat-sub"><span class="up" id="usersToday">+0 today</span> · <span id="deactivatedCount" style="color:var(--red)">0 deactivated</span></div></div>
+        <div class="stat-card"><div class="stat-label">Total Books</div><div class="stat-val" id="totalBooks">—</div><div class="stat-sub"><span class="up" id="booksToday">+0 today</span></div></div>
+        <div class="stat-card"><div class="stat-label">Books This Week</div><div class="stat-val" id="booksWeek">—</div><div class="stat-sub" id="avgPages">Avg: — pages/book</div></div>
+        <div class="stat-card"><div class="stat-label">Failed Books</div><div class="stat-val" id="failedBooks">—</div><div class="stat-sub" id="failRate">—% fail rate</div></div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-card">
+          <h3>📊 Plan Breakdown</h3>
+          <div class="detail-row"><span class="label">Free</span><span class="value" id="planFree">0</span></div>
+          <div class="detail-row"><span class="label">Basic</span><span class="value" id="planBasic">0</span></div>
+          <div class="detail-row"><span class="label">Pro</span><span class="value" id="planPro">0</span></div>
+        </div>
+        <div class="detail-card">
+          <h3>🎨 Image Providers</h3>
+          <div class="bar-row"><div class="bar-label"><span>Gemini</span><span id="geminiCount">0</span></div><div class="bar-track"><div class="bar-fill gemini" id="geminiBar" style="width:0%"></div></div></div>
+          <div class="bar-row"><div class="bar-label"><span>Flux</span><span id="fluxCount">0</span></div><div class="bar-track"><div class="bar-fill flux" id="fluxBar" style="width:0%"></div></div></div>
+          <div class="detail-row" style="margin-top:8px"><span class="label">Est. Cost (Gemini free)</span><span class="value" style="color:var(--green)">$0.00</span></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">👤 Users</button>
+        <button class="tab-btn" data-tab="books" onclick="switchTab('books')">📚 Books</button>
+        <button class="tab-btn" data-tab="pricing" onclick="switchTab('pricing')">💰 Pricing</button>
+      </div>
+
+      <!-- USERS TAB -->
+      <div class="tab-panel active" id="overviewTab">
+        <div class="table-wrap">
+          <div class="table-header"><h3>All Users</h3><input class="table-search" placeholder="Search users..." oninput="filterUsers(this.value)"></div>
+          <div style="overflow-x:auto">
+            <table><thead><tr><th>User</th><th>Email</th><th>Plan</th><th>Status</th><th>Books</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody id="usersBody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKS TAB -->
+      <div class="tab-panel" id="booksTab">
+        <div class="table-wrap">
+          <div class="table-header"><h3>All Books</h3><input class="table-search" placeholder="Search books..." oninput="filterBooks(this.value)"></div>
+          <div style="overflow-x:auto">
+            <table><thead><tr><th>Book</th><th>Author</th><th>Pages</th><th>Provider</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody id="booksBody"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING TAB -->
+      <div class="tab-panel" id="pricingTab">
+        <!-- TIERS -->
+        <div class="pricing-section">
+          <div class="pricing-section-header">
+            <h3>🏷️ Pricing Tiers</h3>
+            <button class="btn-add" onclick="openTierModal()">+ Add Tier</button>
+          </div>
+          <div class="pricing-grid" id="tiersGrid"></div>
+        </div>
+        <!-- CREDIT PACKS -->
+        <div class="pricing-section">
+          <div class="pricing-section-header">
+            <h3>📦 Credit Top-Up Packs</h3>
+            <button class="btn-add" onclick="openPackModal()">+ Add Pack</button>
+          </div>
+          <div class="packs-grid" id="packsGrid"></div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+          <p style="font-size:13px;color:var(--muted);">💡 <strong>Fixed rule:</strong> 1 credit = 1 book. Everything else is fully customizable. Changes here instantly update what users see on the pricing page. Use this to split-test different prices, tier names, and credit amounts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div class="modal-bg" id="editModal">
+    <div class="modal">
+      <h3>✏️ Edit User</h3>
+      <div class="modal-info" id="editUserInfo"></div>
+      <input type="hidden" id="editUserId">
+      <label>Plan</label>
+      <select id="editPlan"><option value="free">Free</option><option value="basic">Basic</option><option value="pro">Pro</option></select>
+      <label>Books Limit (Credits)</label>
+      <input type="number" id="editLimit" min="0" max="99999">
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+        <button class="btn btn-save" onclick="saveUser()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESET PASSWORD MODAL -->
+  <div class="modal-bg" id="pwModal">
+    <div class="modal">
+      <h3>🔑 Reset Password</h3>
+      <div class="modal-info" id="pwUserInfo"></div>
+      <input type="hidden" id="pwUserId">
+      <label>New Password</label>
+      <input type="text" id="newPassword" placeholder="Min 4 characters">
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeModal('pwModal')">Cancel</button>
+        <button class="btn btn-save" onclick="resetPassword()">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER MODAL -->
+  <div class="modal-bg" id="tierModal">
+    <div class="modal">
+      <h3 id="tierModalTitle">Add Tier</h3>
+      <input type="hidden" id="tierEditId">
+      <label>Tier Name</label>
+      <input type="text" id="tierName" placeholder="e.g. Starter, Creator, Pro">
+      <div class="field-row">
+        <div><label>Price ($)</label><input type="number" id="tierPrice" min="0" step="0.01" placeholder="0"></div>
+        <div><label>Credits (Books)</label><input type="number" id="tierCredits" min="0" placeholder="3"></div>
+      </div>
+      <div class="field-row">
+        <div><label>Max Pages / Book</label><input type="number" id="tierMaxPages" min="1" max="50" placeholder="12"></div>
+        <div><label>Display Order</label><input type="number" id="tierOrder" min="0" placeholder="0"></div>
+      </div>
+      <label>Badge Text (optional)</label>
+      <input type="text" id="tierBadge" placeholder="e.g. Popular, Best Value">
+      <label>Features (one per line)</label>
+      <textarea id="tierFeatures" placeholder="15 books included&#10;All art styles&#10;PDF + Image downloads"></textarea>
+      <label>Downloads</label>
+      <div class="check-row"><input type="checkbox" id="dlPdf" checked><label for="dlPdf" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">PDF</label></div>
+      <div class="check-row"><input type="checkbox" id="dlImages"><label for="dlImages" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Images</label></div>
+      <div class="check-row"><input type="checkbox" id="dlKdp"><label for="dlKdp" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">KDP (Amazon)</label></div>
+      <div class="check-row"><input type="checkbox" id="dlFlipbook"><label for="dlFlipbook" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Flipbook</label></div>
+      <div class="check-row"><input type="checkbox" id="tierHighlight"><label for="tierHighlight" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Highlight this tier (purple border)</label></div>
+      <div class="check-row"><input type="checkbox" id="tierActive" checked><label for="tierActive" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Active (visible to users)</label></div>
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeModal('tierModal')">Cancel</button>
+        <button class="btn btn-save" onclick="saveTier()">Save Tier</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDIT PACK MODAL -->
+  <div class="modal-bg" id="packModal">
+    <div class="modal">
+      <h3 id="packModalTitle">Add Credit Pack</h3>
+      <input type="hidden" id="packEditId">
+      <label>Pack Name</label>
+      <input type="text" id="packName" placeholder="e.g. 5 Book Pack">
+      <div class="field-row">
+        <div><label>Credits (Books)</label><input type="number" id="packCredits" min="1" placeholder="5"></div>
+        <div><label>Price ($)</label><input type="number" id="packPrice" min="0" step="0.01" placeholder="5"></div>
+      </div>
+      <div class="field-row">
+        <div><label>Savings Text (optional)</label><input type="text" id="packSavings" placeholder="e.g. Save 20%"></div>
+        <div><label>Display Order</label><input type="number" id="packOrder" min="0" placeholder="0"></div>
+      </div>
+      <div class="check-row"><input type="checkbox" id="packHighlight"><label for="packHighlight" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Highlight this pack</label></div>
+      <div class="check-row"><input type="checkbox" id="packActive" checked><label for="packActive" style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;">Active (visible to users)</label></div>
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeModal('packModal')">Cancel</button>
+        <button class="btn btn-save" onclick="savePack()">Save Pack</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = window.location.origin + '/api/admin';
+    let adminPw = localStorage.getItem('st_admin_pw') || '';
+    let allUsers=[],allBooks=[],allTiers=[],allPacks=[];
+
+    if(adminPw)verifyAndLoad();
+
+    function H(){return{'Content-Type':'application/json','x-admin-password':adminPw};}
+    function showToast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast '+(t||'success');e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+
+    async function adminLogin(){
+      adminPw=document.getElementById('adminPw').value;
+      try{const r=await fetch(API+'/stats',{headers:H()});if(r.status===401){document.getElementById('loginErr').style.display='block';return;}
+      localStorage.setItem('st_admin_pw',adminPw);document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='block';loadAll();}catch(e){document.getElementById('loginErr').textContent='Connection error';document.getElementById('loginErr').style.display='block';}
+    }
+    async function verifyAndLoad(){try{const r=await fetch(API+'/stats',{headers:H()});if(r.ok){document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='block';loadAll();}}catch(e){}}
+    function adminLogout(){localStorage.removeItem('st_admin_pw');location.reload();}
+    function loadAll(){loadStats();loadUsers();loadBooks();loadTiers();loadPacks();}
+
+    async function loadStats(){
+      try{const r=await fetch(API+'/stats',{headers:H()});const d=await r.json();if(!d.success)return;const s=d.stats;
+      document.getElementById('totalUsers').textContent=s.users.total;
+      document.getElementById('usersToday').textContent='+'+s.users.today+' today';
+      document.getElementById('deactivatedCount').textContent=s.users.deactivated+' deactivated';
+      document.getElementById('totalBooks').textContent=s.books.total;
+      document.getElementById('booksToday').textContent='+'+s.books.today+' today';
+      document.getElementById('booksWeek').textContent=s.books.thisWeek;
+      document.getElementById('avgPages').textContent='Avg: '+s.avgPagesPerBook+' pages/book';
+      document.getElementById('failedBooks').textContent=s.books.failed;
+      const fr=s.books.total>0?Math.round((s.books.failed/(s.books.total+s.books.failed))*100):0;
+      document.getElementById('failRate').textContent=fr+'% fail rate';
+      document.getElementById('planFree').textContent=s.plans.free;
+      document.getElementById('planBasic').textContent=s.plans.basic;
+      document.getElementById('planPro').textContent=s.plans.pro;
+      const ti=s.images.gemini+s.images.flux;
+      document.getElementById('geminiCount').textContent=s.images.gemini;
+      document.getElementById('fluxCount').textContent=s.images.flux;
+      document.getElementById('geminiBar').style.width=ti>0?(s.images.gemini/ti*100)+'%':'0%';
+      document.getElementById('fluxBar').style.width=ti>0?(s.images.flux/ti*100)+'%':'0%';
+      }catch(e){}
+    }
+
+    const ac=['#6C5CE7','#0984E3','#00D68F','#FDCB6E','#FD79A8','#E17055','#00CEC9','#A29BFE'];
+    function gc(s){let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return ac[Math.abs(h)%ac.length];}
+    function ta(d){const dt=new Date(d),n=new Date(),df=Math.floor((n-dt)/1000);if(df<60)return'just now';if(df<3600)return Math.floor(df/60)+'m ago';if(df<86400)return Math.floor(df/3600)+'h ago';if(df<604800)return Math.floor(df/86400)+'d ago';return dt.toLocaleDateString();}
+
+    // ---- USERS ----
+    async function loadUsers(){try{const r=await fetch(API+'/users',{headers:H()});const d=await r.json();allUsers=d.users||[];renderUsers(allUsers);}catch(e){}}
+    function renderUsers(users){
+      document.getElementById('usersBody').innerHTML=users.map(u=>{
+        const i=(u.name||'?')[0].toUpperCase(),c=gc(u.email),a=u.active!==false,rc=a?'':'deactivated',
+        sb=a?'<span class="badge badge-active">Active</span>':'<span class="badge badge-inactive">Inactive</span>',
+        tb=a?'<button class="action-btn toggle-off" onclick="toggleUser(\''+u._id+'\',\''+u.name+'\',true)">⛔</button>':'<button class="action-btn toggle-on" onclick="toggleUser(\''+u._id+'\',\''+u.name+'\',false)">✅</button>';
+        return'<tr class="'+rc+'"><td><span class="user-avatar" style="background:'+c+'">'+i+'</span>'+(u.name||'Unknown')+'</td><td style="color:var(--muted)">'+u.email+'</td><td><span class="badge badge-'+u.plan+'">'+u.plan+'</span></td><td>'+sb+'</td><td>'+u.actualBooks+' / '+u.booksLimit+'</td><td style="color:var(--muted)">'+ta(u.createdAt)+'</td><td><button class="action-btn edit" onclick="openEditModal(\''+u._id+'\',\''+u.name+'\',\''+u.email+'\',\''+u.plan+'\','+u.booksLimit+')">✏️</button><button class="action-btn pw" onclick="openPwModal(\''+u._id+'\',\''+u.name+'\',\''+u.email+'\')">🔑</button>'+tb+'<button class="action-btn" onclick="deleteUser(\''+u._id+'\',\''+u.name+'\')">🗑️</button></td></tr>';
+      }).join('');
+    }
+    function filterUsers(q){renderUsers(allUsers.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.email.toLowerCase().includes(q.toLowerCase())));}
+
+    // ---- BOOKS ----
+    async function loadBooks(){try{const r=await fetch(API+'/books',{headers:H()});const d=await r.json();allBooks=d.books||[];renderBooks(allBooks);}catch(e){}}
+    function renderBooks(books){
+      document.getElementById('booksBody').innerHTML=books.map(b=>'<tr><td style="font-weight:600">'+b.title+'</td><td style="color:var(--muted)">'+(b.user?.name||'Unknown')+'</td><td>'+b.pages+'</td><td><span class="badge badge-'+b.imageProvider+'">'+b.imageProvider+'</span></td><td><span class="badge badge-'+b.status+'">'+b.status+'</span></td><td style="color:var(--muted)">'+ta(b.createdAt)+'</td><td><button class="action-btn" onclick="deleteBook(\''+b._id+'\',\''+b.title.replace(/'/g,"\\'")+'\')">🗑️</button></td></tr>').join('');
+    }
+    function filterBooks(q){renderBooks(allBooks.filter(b=>b.title.toLowerCase().includes(q.toLowerCase())||(b.user?.name||'').toLowerCase().includes(q.toLowerCase())));}
+
+    // ---- TIERS ----
+    async function loadTiers(){try{const r=await fetch(API+'/tiers',{headers:H()});const d=await r.json();allTiers=d.tiers||[];renderTiers();}catch(e){}}
+    function renderTiers(){
+      document.getElementById('tiersGrid').innerHTML=allTiers.map(t=>{
+        const hl=t.highlight?'highlighted':'';const dis=t.active?'':'disabled';
+        const badge=t.badge?'<div class="card-badge">'+t.badge+'</div>':'';
+        const features=(t.features||[]).map(f=>'<li>'+f+'</li>').join('');
+        const dl=[];if(t.downloads?.pdf)dl.push('PDF');if(t.downloads?.images)dl.push('Images');if(t.downloads?.kdp)dl.push('KDP');if(t.downloads?.flipbook)dl.push('Flipbook');
+        return'<div class="pricing-card '+hl+' '+dis+'">'+badge+
+          '<div class="card-name">'+t.name+'</div>'+
+          '<div class="card-price">$'+t.price+'<span> one-time</span></div>'+
+          '<div class="card-credits">'+t.credits+' books included</div>'+
+          '<ul class="card-features">'+features+'</ul>'+
+          '<div class="card-meta"><span>📄 Max '+t.maxPages+' pages/book</span><span>📥 Downloads: '+(dl.join(', ')||'None')+'</span><span>'+(t.active?'🟢 Active':'🔴 Inactive')+'</span></div>'+
+          '<div class="card-actions"><button class="action-btn edit" onclick="editTier(\''+t._id+'\')">✏️ Edit</button>'+(t.isDefault?'':'<button class="action-btn" onclick="deleteTier(\''+t._id+'\',\''+t.name+'\')">🗑️</button>')+'</div></div>';
+      }).join('');
+    }
+    function openTierModal(tier){
+      document.getElementById('tierModalTitle').textContent=tier?'Edit Tier':'Add Tier';
+      document.getElementById('tierEditId').value=tier?tier._id:'';
+      document.getElementById('tierName').value=tier?tier.name:'';
+      document.getElementById('tierPrice').value=tier?tier.price:'';
+      document.getElementById('tierCredits').value=tier?tier.credits:'';
+      document.getElementById('tierMaxPages').value=tier?tier.maxPages:12;
+      document.getElementById('tierOrder').value=tier?tier.order:allTiers.length;
+      document.getElementById('tierBadge').value=tier?tier.badge||'':'';
+      document.getElementById('tierFeatures').value=tier?(tier.features||[]).join('\n'):'';
+      document.getElementById('dlPdf').checked=tier?tier.downloads?.pdf:true;
+      document.getElementById('dlImages').checked=tier?tier.downloads?.images:false;
+      document.getElementById('dlKdp').checked=tier?tier.downloads?.kdp:false;
+      document.getElementById('dlFlipbook').checked=tier?tier.downloads?.flipbook:false;
+      document.getElementById('tierHighlight').checked=tier?tier.highlight:false;
+      document.getElementById('tierActive').checked=tier?tier.active:true;
+      document.getElementById('tierModal').classList.add('open');
+    }
+    function editTier(id){const t=allTiers.find(x=>x._id===id);if(t)openTierModal(t);}
+    async function saveTier(){
+      const id=document.getElementById('tierEditId').value;
+      const body={
+        name:document.getElementById('tierName').value,
+        price:document.getElementById('tierPrice').value,
+        credits:document.getElementById('tierCredits').value,
+        maxPages:document.getElementById('tierMaxPages').value,
+        order:document.getElementById('tierOrder').value,
+        badge:document.getElementById('tierBadge').value,
+        features:document.getElementById('tierFeatures').value.split('\n').filter(f=>f.trim()),
+        downloads:{pdf:document.getElementById('dlPdf').checked,images:document.getElementById('dlImages').checked,kdp:document.getElementById('dlKdp').checked,flipbook:document.getElementById('dlFlipbook').checked},
+        highlight:document.getElementById('tierHighlight').checked,
+        active:document.getElementById('tierActive').checked
+      };
+      try{
+        const url=id?API+'/tiers/'+id:API+'/tiers';
+        const method=id?'PUT':'POST';
+        const r=await fetch(url,{method,headers:H(),body:JSON.stringify(body)});
+        const d=await r.json();
+        if(d.success){showToast(id?'Tier updated!':'Tier created!');closeModal('tierModal');loadTiers();}
+        else showToast('Error: '+d.error,'error');
+      }catch(e){showToast('Error: '+e.message,'error');}
+    }
+    async function deleteTier(id,name){
+      if(!confirm('Delete tier "'+name+'"?'))return;
+      try{const r=await fetch(API+'/tiers/'+id,{method:'DELETE',headers:H()});const d=await r.json();
+      if(d.success){showToast('Tier deleted');loadTiers();}else showToast(d.error,'error');}catch(e){showToast(e.message,'error');}
+    }
+
+    // ---- CREDIT PACKS ----
+    async function loadPacks(){try{const r=await fetch(API+'/credit-packs',{headers:H()});const d=await r.json();allPacks=d.packs||[];renderPacks();}catch(e){}}
+    function renderPacks(){
+      document.getElementById('packsGrid').innerHTML=allPacks.map(p=>{
+        const hl=p.highlight?'highlighted':'';const dis=p.active?'':'disabled';
+        const savings=p.savings?'<span class="savings">'+p.savings+'</span>':'';
+        return'<div class="pack-card '+hl+' '+dis+'"><div class="pack-left"><div class="pack-icon">📦</div><div class="pack-info"><div class="pack-name">'+p.name+'</div><div class="pack-detail">'+p.credits+' books'+savings+'</div></div></div><div class="pack-right"><div class="pack-price">$'+p.price+'</div><button class="action-btn edit" onclick="editPack(\''+p._id+'\')">✏️</button><button class="action-btn" onclick="deletePack(\''+p._id+'\',\''+p.name+'\')">🗑️</button></div></div>';
+      }).join('');
+    }
+    function openPackModal(pack){
+      document.getElementById('packModalTitle').textContent=pack?'Edit Pack':'Add Credit Pack';
+      document.getElementById('packEditId').value=pack?pack._id:'';
+      document.getElementById('packName').value=pack?pack.name:'';
+      document.getElementById('packCredits').value=pack?pack.credits:'';
+      document.getElementById('packPrice').value=pack?pack.price:'';
+      document.getElementById('packSavings').value=pack?pack.savings||'':'';
+      document.getElementById('packOrder').value=pack?pack.order:allPacks.length;
+      document.getElementById('packHighlight').checked=pack?pack.highlight:false;
+      document.getElementById('packActive').checked=pack?pack.active:true;
+      document.getElementById('packModal').classList.add('open');
+    }
+    function editPack(id){const p=allPacks.find(x=>x._id===id);if(p)openPackModal(p);}
+    async function savePack(){
+      const id=document.getElementById('packEditId').value;
+      const body={
+        name:document.getElementById('packName').value,
+        credits:document.getElementById('packCredits').value,
+        price:document.getElementById('packPrice').value,
+        savings:document.getElementById('packSavings').value,
+        order:document.getElementById('packOrder').value,
+        highlight:document.getElementById('packHighlight').checked,
+        active:document.getElementById('packActive').checked
+      };
+      try{
+        const url=id?API+'/credit-packs/'+id:API+'/credit-packs';
+        const method=id?'PUT':'POST';
+        const r=await fetch(url,{method,headers:H(),body:JSON.stringify(body)});
+        const d=await r.json();
+        if(d.success){showToast(id?'Pack updated!':'Pack created!');closeModal('packModal');loadPacks();}
+        else showToast('Error: '+d.error,'error');
+      }catch(e){showToast('Error: '+e.message,'error');}
+    }
+    async function deletePack(id,name){
+      if(!confirm('Delete pack "'+name+'"?'))return;
+      try{const r=await fetch(API+'/credit-packs/'+id,{method:'DELETE',headers:H()});const d=await r.json();
+      if(d.success){showToast('Pack deleted');loadPacks();}else showToast(d.error,'error');}catch(e){showToast(e.message,'error');}
+    }
+
+    // ---- TABS ----
+    function switchTab(tab){
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      document.getElementById(tab+'Tab').classList.add('active');
+      document.querySelector('[data-tab="'+tab+'"]').classList.add('active');
+    }
+    function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+    // ---- USER ACTIONS ----
+    function openEditModal(id,name,email,plan,limit){document.getElementById('editUserId').value=id;document.getElementById('editUserInfo').textContent=name+' ('+email+')';document.getElementById('editPlan').value=plan;document.getElementById('editLimit').value=limit;document.getElementById('editModal').classList.add('open');}
+    async function saveUser(){const id=document.getElementById('editUserId').value;try{const r=await fetch(API+'/users/'+id+'/update',{method:'POST',headers:H(),body:JSON.stringify({plan:document.getElementById('editPlan').value,booksLimit:document.getElementById('editLimit').value})});const d=await r.json();if(d.success){showToast('User updated!');closeModal('editModal');loadAll();}else showToast(d.error,'error');}catch(e){showToast(e.message,'error');}}
+    function openPwModal(id,name,email){document.getElementById('pwUserId').value=id;document.getElementById('pwUserInfo').textContent=name+' ('+email+')';document.getElementById('newPassword').value='';document.getElementById('pwModal').classList.add('open');}
+    async function resetPassword(){const id=document.getElementById('pwUserId').value;const pw=document.getElementById('newPassword').value;if(!pw||pw.length<4){showToast('Min 4 characters','error');return;}try{const r=await fetch(API+'/users/'+id+'/reset-password',{method:'POST',headers:H(),body:JSON.stringify({newPassword:pw})});const d=await r.json();if(d.success){showToast('Password reset! ✅');closeModal('pwModal');}else showToast(d.error,'error');}catch(e){showToast(e.message,'error');}}
+    async function toggleUser(id,name,active){if(!confirm((active?'Deactivate':'Activate')+' user "'+name+'"?'))return;try{const r=await fetch(API+'/users/'+id+'/toggle-active',{method:'POST',headers:H()});const d=await r.json();if(d.success){showToast(d.message+' ✅');loadAll();}else showToast(d.error,'error');}catch(e){showToast(e.message,'error');}}
+    async function deleteUser(id,name){if(!confirm('Delete "'+name+'" and ALL their books?'))return;try{await fetch(API+'/users/'+id,{method:'DELETE',headers:H()});showToast('Deleted');loadAll();}catch(e){showToast(e.message,'error');}}
+    async function deleteBook(id,title){if(!confirm('Delete "'+title+'"?'))return;try{await fetch(API+'/books/'+id,{method:'DELETE',headers:H()});showToast('Deleted');loadAll();}catch(e){showToast(e.message,'error');}}
+  </script>
+</body>
+</html>

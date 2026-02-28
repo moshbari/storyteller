@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Robot Goes to Kindergarten - StoryTeller</title>
+<meta property="og:title" content="Robot Goes to Kindergarten">
+<meta property="og:description" content="A magical story created with StoryTeller AI">
+<meta property="og:image" content="/images/1772180191889/page-1.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.header{text-align:center;margin-bottom:24px;color:white}
+.header h1{font-size:28px;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.header p{opacity:0.8;font-size:14px}
+.flipbook{background:white;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:600px;width:100%;overflow:hidden;position:relative}
+.page-display{position:relative}
+.page-display img{width:100%;display:block;min-height:300px;object-fit:cover;background:#f0f0f0}
+.page-text{padding:24px 28px;font-size:17px;line-height:1.7;color:#333;text-align:center;min-height:80px}
+.controls{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 20px;border-top:1px solid #eee;background:#fafafa;border-radius:0 0 16px 16px}
+.controls button{padding:10px 24px;border:none;border-radius:50px;font-weight:700;font-size:14px;cursor:pointer;transition:0.3s}
+.btn-prev{background:#f1f5f9;color:#333}
+.btn-next{background:linear-gradient(135deg,#FF6B6B,#ee5a24);color:white}
+.btn-prev:hover,.btn-next:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.btn-prev:disabled,.btn-next:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.page-num{font-weight:700;color:#999;font-size:14px;min-width:80px;text-align:center}
+.footer{margin-top:20px;text-align:center;color:rgba(255,255,255,0.7);font-size:13px}
+.footer a{color:white;text-decoration:none;font-weight:700}
+.no-img{width:100%;height:300px;display:flex;align-items:center;justify-content:center;background:#f0f4ff;font-size:60px}
+@media(max-width:640px){.header h1{font-size:22px}.page-text{font-size:15px;padding:18px}.controls button{padding:8px 18px;font-size:13px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📖 Robot Goes to Kindergarten</h1>
+  <p>A StoryTeller Book</p>
+</div>
+<div class="flipbook">
+  <div class="page-display">
+    <img id="pageImg" src="" alt="Page illustration">
+    <div class="no-img" id="noImg" style="display:none">📖</div>
+  </div>
+  <div class="page-text" id="pageText"></div>
+  <div class="controls">
+    <button class="btn-prev" id="btnP" onclick="go(-1)">← Back</button>
+    <span class="page-num" id="pageNum">1 / 12</span>
+    <button class="btn-next" id="btnN" onclick="go(1)">Next →</button>
+  </div>
+</div>
+<div class="footer">Made with <a href="/">StoryTeller</a> ✨</div>
+<script>
+const pages=[{"num":1,"text":"One sunny morning, Bobby the Robot arrived at kindergarten for the very first time. Excited and a little nervous, he looked around at all the children playing.","imageUrl":"/images/1772180191889/page-1.png"},{"num":2,"text":"Bobby waved his arm, making a friendly beeping sound. \\'Hello, everyone! I\\'m Bobby! Let\\'s be friends!\\'","imageUrl":"/images/1772180191889/page-2.png"},{"num":3,"text":"At first, the kids weren\\'t sure what to think of a robot in their class. They whispered to each other, unsure if they wanted to play with him.","imageUrl":"/images/1772180191889/page-3.png"},{"num":4,"text":"Bobby decided to join a game of block building. He carefully placed his blocks one by one, trying to make the tallest tower.","imageUrl":"/images/1772180191889/page-4.png"},{"num":5,"text":"As Bobby built, he accidentally knocked over a tower. \\'Oh no!\\' he exclaimed, his lights flickering. The children giggled.","imageUrl":"/images/1772180191889/page-5.png"},{"num":6,"text":"Instead of feeling sad, Bobby laughed along. \\'Let\\'s build it again, together!\\' he suggested, and the kids agreed.","imageUrl":"/images/1772180191889/page-6.png"},{"num":7,"text":"With Bobby’s help, the kids built an even taller tower, and they cheered when it didn\\'t fall over this time.","imageUrl":"/images/1772180191889/page-7.png"},{"num":8,"text":"As the day went on, Bobby joined in on singing songs and playing games. He even shared his crayons with the kids.","imageUrl":"/images/1772180191889/page-8.png"},{"num":9,"text":"By lunchtime, Bobby had made several friends, and they all sat together, sharing their snacks and stories.","imageUrl":"/images/1772180191889/page-9.png"},{"num":10,"text":"One of the kids offered Bobby a cookie. \\'You can be our friend too!\\' they said, and Bobby’s lights flashed with joy.","imageUrl":"/images/1772180191889/page-10.png"},{"num":11,"text":"From that day on, Bobby learned that being different was special, and making friends was the best adventure of all.","imageUrl":"/images/1772180191889/page-11.png"},{"num":12,"text":"And so, Bobby the Robot and his friends played together every day, learning, laughing, and having fun in kindergarten.","imageUrl":"/images/1772180191889/page-12.png"}];
+let cur=0;
+function show(){
+  const p=pages[cur];
+  const img=document.getElementById('pageImg');
+  const noImg=document.getElementById('noImg');
+  if(p.imageUrl){img.src=p.imageUrl;img.style.display='block';noImg.style.display='none';}
+  else{img.style.display='none';noImg.style.display='flex';}
+  document.getElementById('pageText').textContent=p.text;
+  document.getElementById('pageNum').textContent=(cur+1)+' / '+pages.length;
+  document.getElementById('btnP').disabled=cur===0;
+  document.getElementById('btnN').disabled=cur===pages.length-1;
+}
+function go(d){cur=Math.max(0,Math.min(pages.length-1,cur+d));show();}
+show();
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+let tx=0;document.querySelector('.flipbook').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;});
+document.querySelector('.flipbook').addEventListener('touchend',function(e){const diff=e.changedTouches[0].clientX-tx;if(Math.abs(diff)>50){diff<0?go(1):go(-1);}});
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   plan: { type: String, enum: ['free', 'basic', 'pro'], default: 'free' },
   booksCreated: { type: Number, default: 0 },
   booksLimit: { type: Number, default: 3 },
+  active: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
 
