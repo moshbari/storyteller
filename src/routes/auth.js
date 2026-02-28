@@ -151,4 +151,22 @@ router.post('/set-password', async (req, res) => {
   }
 });
 
+// Get fresh user profile data (called on dashboard load)
+router.get('/me', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    res.json({ user: { name: user.name, email: user.email, plan: user.plan, booksLimit: user.booksLimit, booksCreated: user.booksCreated } });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
 module.exports = router;
