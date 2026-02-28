@@ -2,13 +2,35 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const TosAgreement = require('../models/TosAgreement');
 
 const router = express.Router();
 
+// Helper: Record TOS agreement
+async function recordTosAgreement(user, req) {
+  try {
+    await TosAgreement.create({
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      ipAddress: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection?.remoteAddress || '',
+      userAgent: req.headers['user-agent'] || '',
+      tosVersion: '1.0',
+      plan: user.plan,
+      checkboxText: 'I have read and agree to the Terms of Service, Privacy Policy, and Refund Policy.'
+    });
+    console.log('📋 TOS agreement recorded for:', user.email);
+  } catch (err) {
+    console.log('⚠️ TOS recording error:', err.message);
+  }
+}
+
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, tosAgreed } = req.body;
     console.log('📝 Signup attempt:', email);
+
+    if (!tosAgreed) return res.status(400).json({ error: 'You must agree to the Terms of Service to continue' });
 
     const existingUser = await User.findOne({ email });
     
@@ -20,6 +42,8 @@ router.post('/signup', async (req, res) => {
       await existingUser.save();
       console.log('✅ Whop user completed signup:', email);
 
+      await recordTosAgreement(existingUser, req);
+
       const token = jwt.sign({ id: existingUser._id, email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
       return res.json({ message: 'Account activated! 🎉', token, user: { name: existingUser.name, email: existingUser.email, plan: existingUser.plan, booksLimit: existingUser.booksLimit } });
     }
@@ -30,6 +54,8 @@ router.post('/signup', async (req, res) => {
     const user = new User({ name, email, password });
     await user.save();
     console.log('✅ User created:', email);
+
+    await recordTosAgreement(user, req);
 
     if (user.active === false) return res.status(403).json({ error: "Your account has been deactivated. Contact support." });
 
@@ -69,9 +95,10 @@ router.post('/login', async (req, res) => {
 // Set password for Whop-created accounts
 router.post('/set-password', async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, tosAgreed } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
     if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    if (!tosAgreed) return res.status(400).json({ error: 'You must agree to the Terms of Service to continue' });
 
     const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) return res.status(400).json({ error: 'No account found with this email. Please purchase a plan first.' });
@@ -82,6 +109,9 @@ router.post('/set-password', async (req, res) => {
     user.needsPasswordSetup = false;
     if (name && name.trim()) user.name = name.trim();
     await user.save();
+
+    // Record TOS agreement with IP, user agent, timestamp
+    await recordTosAgreement(user, req);
 
     console.log('✅ Password set for Whop buyer:', email);
 

@@ -42,6 +42,11 @@ app.get('/pricing', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/pricing.html'));
 });
 
+// Serve terms page at /terms (without .html)
+app.get('/terms', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/terms.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 StoryTeller running on port ${PORT}`);
 });

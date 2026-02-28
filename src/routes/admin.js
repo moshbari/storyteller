@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Book = require('../models/Book');
 const Tier = require('../models/Tier');
 const CreditPack = require('../models/CreditPack');
+const TosAgreement = require('../models/TosAgreement');
 const bcrypt = require('bcryptjs');
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'StoryAdmin2026!';
@@ -229,6 +230,49 @@ router.delete('/credit-packs/:id', adminAuth, async (req, res) => {
   try {
     await CreditPack.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Credit pack deleted' });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// ============================================
+// TOS AGREEMENTS (for dispute/chargeback proof)
+// ============================================
+router.get('/tos-agreements', adminAuth, async (req, res) => {
+  try {
+    const { email } = req.query;
+    const query = email ? { email: email.toLowerCase().trim() } : {};
+    const agreements = await TosAgreement.find(query).sort({ agreedAt: -1 }).lean();
+    res.json({ success: true, count: agreements.length, agreements });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// Quick lookup by email — returns formatted proof for disputes
+router.get('/tos-proof/:email', adminAuth, async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase().trim();
+    const agreements = await TosAgreement.find({ email }).sort({ agreedAt: -1 }).lean();
+    const user = await User.findOne({ email }).select('-password').lean();
+    
+    if (!agreements.length) {
+      return res.json({ success: false, message: 'No TOS agreement found for this email' });
+    }
+
+    res.json({
+      success: true,
+      proof: {
+        user: user ? { name: user.name, email: user.email, plan: user.plan, createdAt: user.createdAt } : null,
+        agreements: agreements.map(a => ({
+          name: a.name,
+          email: a.email,
+          agreedAt: a.agreedAt,
+          ipAddress: a.ipAddress,
+          userAgent: a.userAgent,
+          tosVersion: a.tosVersion,
+          plan: a.plan,
+          checkboxText: a.checkboxText
+        })),
+        summary: `User "${agreements[0].name}" (${email}) agreed to TOS v${agreements[0].tosVersion} on ${new Date(agreements[0].agreedAt).toUTCString()} from IP ${agreements[0].ipAddress}. Agreement checkbox stated: "${agreements[0].checkboxText}"`
+      }
+    });
   } catch (error) { res.status(500).json({ error: error.message }); }
 });
 

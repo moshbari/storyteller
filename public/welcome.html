@@ -142,6 +142,56 @@
       transform: none;
     }
 
+    /* TOS Checkbox */
+    .tos-check {
+      margin: 20px 0 8px;
+      text-align: left;
+    }
+    .checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      display: none;
+    }
+    .checkmark {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+      margin-top: 2px;
+    }
+    .checkbox-wrap input[type="checkbox"]:checked + .checkmark {
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+    .checkbox-wrap input[type="checkbox"]:checked + .checkmark::after {
+      content: '✓';
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .tos-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .tos-text a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .tos-text a:hover { text-decoration: underline; }
+
     .msg {
       padding: 10px 16px;
       border-radius: 10px;
@@ -227,6 +277,14 @@
         <input type="password" id="passConfirm" placeholder="Type password again">
       </div>
 
+      <div class="tos-check">
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="tosCheckbox">
+          <span class="checkmark"></span>
+          <span class="tos-text">I have read and agree to the <a href="/terms" target="_blank">Terms of Service</a>, <a href="https://winarzapps.com/privacy-policy/" target="_blank">Privacy Policy</a>, and <a href="/terms#refund" target="_blank">Refund Policy</a>.</span>
+        </label>
+      </div>
+
       <button class="btn-submit" id="btnSubmit" onclick="setPassword()">Set Password & Start Creating 🚀</button>
 
       <div class="msg" id="msg"></div>
@@ -260,12 +318,14 @@
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passInput').value;
       const confirm = document.getElementById('passConfirm').value;
+      const tosChecked = document.getElementById('tosCheckbox').checked;
 
       // Validate
       if (!email) return showMsg('Please enter your email', 'error');
       if (!password) return showMsg('Please choose a password', 'error');
       if (password.length < 6) return showMsg('Password must be at least 6 characters', 'error');
       if (password !== confirm) return showMsg('Passwords do not match', 'error');
+      if (!tosChecked) return showMsg('You must agree to the Terms of Service to continue', 'error');
 
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
@@ -275,7 +335,7 @@
         const res = await fetch(API + '/set-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, name })
+          body: JSON.stringify({ email, password, name, tosAgreed: true })
         });
         const data = await res.json();
 

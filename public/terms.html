@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — StoryTeller AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0C14;
+      --bg-card: #12141E;
+      --text: #E8ECF4;
+      --muted: #7A849A;
+      --border: rgba(255,255,255,0.06);
+      --coral: #FF6B6B;
+      --sunset: #FF8E53;
+      --purple: #BB6BD9;
+      --cyan: #56CCF2;
+      --green: #6BCB77;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Baloo 2', cursive;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      width: 400px; height: 400px;
+      background: rgba(255,107,107,0.05);
+      border-radius: 50%;
+      filter: blur(120px);
+      top: -100px; right: -100px;
+      z-index: 0;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 32px;
+      background: rgba(10,12,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+    }
+    .nav-brand span { color: var(--coral); }
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .nav-link:hover { color: white; background: rgba(255,255,255,0.05); }
+
+    /* CONTENT */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255,107,107,0.08);
+      border: 1px solid rgba(255,107,107,0.15);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--coral);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .last-updated {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 40px;
+      margin-bottom: 12px;
+      color: white;
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: var(--cyan);
+    }
+    p, li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 12px;
+    }
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+    li { margin-bottom: 6px; }
+    strong { color: var(--text); }
+    a { color: var(--cyan); }
+    .highlight-box {
+      background: rgba(255,107,107,0.06);
+      border: 1px solid rgba(255,107,107,0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .highlight-box.green {
+      background: rgba(107,203,119,0.06);
+      border-color: rgba(107,203,119,0.15);
+    }
+    .highlight-box p { margin-bottom: 4px; }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .footer a { color: var(--muted); text-decoration: none; margin: 0 10px; }
+    .footer a:hover { color: white; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">StoryTeller <span>AI</span></a>
+    <div>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/pricing" class="nav-link">Pricing</a>
+    </div>
+  </nav>
+
+  <div class="wrapper">
+    <div class="page-badge">📋 Legal Document</div>
+    <h1>Terms of Service</h1>
+    <p class="last-updated">Last updated: February 28, 2026 &nbsp;|&nbsp; Version 1.0</p>
+
+    <p>Welcome to StoryTeller AI ("Service"), a product of Mosh Bari / Zpresso LLC ("Company", "we", "us", "our"). By accessing or using StoryTeller AI, you agree to be bound by these Terms of Service ("Terms"). If you do not agree, please do not use the Service.</p>
+
+    <!-- 1. SERVICE DESCRIPTION -->
+    <h2>1. Service Description</h2>
+    <p>StoryTeller AI is an artificial intelligence-powered platform that generates personalized children's books. The Service uses AI agents to write stories, create illustrations, and assemble complete books in digital formats including PDF, Amazon KDP-ready files, and interactive flipbooks.</p>
+    <p>The Service is provided "as is." Because content is generated by artificial intelligence, results may vary in quality and accuracy. We continuously work to improve the AI, but we cannot guarantee that every generated book will meet your specific expectations.</p>
+
+    <!-- 2. ACCOUNTS -->
+    <h2>2. Account Registration & Security</h2>
+    <p>To use StoryTeller AI, you must create an account. You agree to:</p>
+    <ul>
+      <li>Provide accurate and complete information during registration</li>
+      <li>Maintain the security of your account password</li>
+      <li>Accept responsibility for all activities under your account</li>
+      <li>Notify us immediately of any unauthorized use of your account</li>
+      <li>Maintain only one account per person</li>
+    </ul>
+    <p>We reserve the right to suspend or terminate accounts that violate these Terms or engage in fraudulent activity.</p>
+
+    <!-- 3. PLANS & BILLING -->
+    <h2>3. Subscription Plans & Billing</h2>
+    <h3>3.1 Plans</h3>
+    <p>StoryTeller AI offers the following plan types:</p>
+    <ul>
+      <li><strong>Free Plan:</strong> Limited number of books at no cost</li>
+      <li><strong>Starter Plan:</strong> Monthly subscription with increased book allocation</li>
+      <li><strong>Creator Plan:</strong> Monthly subscription with the highest book allocation and all features</li>
+      <li><strong>Credit Packs:</strong> One-time purchases that add additional book credits to your account</li>
+    </ul>
+
+    <h3>3.2 Billing</h3>
+    <p>Subscription plans are billed on a recurring monthly basis through our payment partner, Whop. By subscribing, you authorize us to charge your payment method on a recurring basis until you cancel. Prices are listed in USD and may be subject to applicable taxes.</p>
+
+    <h3>3.3 Cancellation</h3>
+    <p>You may cancel your subscription at any time through your Whop account. Upon cancellation:</p>
+    <ul>
+      <li>Your access continues until the end of the current billing period</li>
+      <li>No partial refunds are given for unused time within a billing period</li>
+      <li>Your account will revert to the Free Plan after the billing period ends</li>
+      <li>Any unused credits from credit packs remain available on your account</li>
+    </ul>
+
+    <!-- 4. REFUND POLICY -->
+    <h2>4. Refund Policy</h2>
+    <div class="highlight-box">
+      <p><strong>⚠️ Please read this section carefully. By purchasing any plan or credit pack, you acknowledge and agree to this refund policy.</strong></p>
+    </div>
+
+    <h3>4.1 Subscription Plans (Starter & Creator)</h3>
+    <ul>
+      <li>You may request a <strong>full refund within 7 days</strong> of your initial purchase, provided that <strong>no books have been created</strong> using your account during that period.</li>
+      <li>If you have created one or more books after purchasing, no refund will be issued as the digital service has been consumed.</li>
+      <li>Subscription renewals are non-refundable.</li>
+      <li>Cancellation stops future billing but does not entitle you to a refund for the current period.</li>
+    </ul>
+
+    <h3>4.2 Credit Packs (One-Time Purchases)</h3>
+    <ul>
+      <li>You may request a <strong>full refund within 7 days</strong> of purchase, provided that <strong>no credits have been used</strong>.</li>
+      <li>Once any credits from the pack have been used to generate books, no refund will be issued.</li>
+    </ul>
+
+    <h3>4.3 Free Plan</h3>
+    <p>The Free Plan has no associated charges, and therefore no refunds apply.</p>
+
+    <h3>4.4 How to Request a Refund</h3>
+    <p>To request a refund, contact us at the email address provided in Section 13 within the applicable refund window. Include your account email and the reason for your request. Refunds are processed within 5–10 business days.</p>
+
+    <div class="highlight-box green">
+      <p><strong>Summary:</strong> 7-day refund window from initial purchase. No refund once books are created or credits are used. Renewals are non-refundable. Cancel anytime to stop future charges.</p>
+    </div>
+
+    <!-- 5. CONTENT OWNERSHIP -->
+    <h2>5. Content Ownership & Intellectual Property</h2>
+    <h3>5.1 Your Content</h3>
+    <p>You retain ownership of the books generated through StoryTeller AI. You are free to use, publish, distribute, or sell your generated books, including through platforms such as Amazon KDP, for personal or commercial purposes.</p>
+
+    <h3>5.2 License to Us</h3>
+    <p>By using the Service, you grant Mosh Bari / Zpresso LLC a non-exclusive, worldwide, royalty-free license to use, display, and showcase your generated books (or portions thereof) for the following limited purposes:</p>
+    <ul>
+      <li>Displaying as examples on our website, marketing materials, or social media</li>
+      <li>Demonstrating the capabilities of StoryTeller AI to prospective customers</li>
+      <li>Improving our AI models and service quality</li>
+    </ul>
+    <p>We will not sell your generated books independently or claim authorship over them. If you wish to opt out of having your books showcased, please contact us and we will remove any displayed content within a reasonable timeframe.</p>
+
+    <h3>5.3 AI-Generated Content Disclaimer</h3>
+    <p>Content generated by StoryTeller AI is produced using artificial intelligence. While we strive for high quality, AI-generated content may occasionally contain errors, inconsistencies, or unintended similarities to existing works. You are responsible for reviewing all generated content before publishing or distributing it.</p>
+
+    <!-- 6. ACCEPTABLE USE -->
+    <h2>6. Acceptable Use Policy</h2>
+    <p>You agree not to use StoryTeller AI to:</p>
+    <ul>
+      <li>Generate content that is harmful, abusive, threatening, obscene, or illegal</li>
+      <li>Create content that promotes violence, hatred, or discrimination</li>
+      <li>Generate content that exploits or harms minors in any way</li>
+      <li>Attempt to reverse-engineer, copy, or replicate our AI systems</li>
+      <li>Use automated tools, bots, or scripts to access the Service</li>
+      <li>Share your account credentials with others or operate multiple accounts</li>
+      <li>Resell access to the Service without our written permission</li>
+      <li>Circumvent any limitations, usage quotas, or security measures</li>
+    </ul>
+    <p>We reserve the right to review generated content and suspend accounts that violate this policy without refund.</p>
+
+    <!-- 7. SERVICE AVAILABILITY -->
+    <h2>7. Service Availability & Modifications</h2>
+    <p>We strive to maintain reliable access to StoryTeller AI, but we do not guarantee uninterrupted availability. We reserve the right to:</p>
+    <ul>
+      <li>Modify, update, or discontinue features at any time</li>
+      <li>Perform maintenance that may temporarily interrupt the Service</li>
+      <li>Adjust pricing with reasonable notice to existing subscribers</li>
+      <li>Limit or throttle usage to maintain service quality for all users</li>
+    </ul>
+
+    <!-- 8. PRIVACY -->
+    <h2>8. Privacy</h2>
+    <p>Your privacy is important to us. Our collection and use of personal information is governed by our <a href="https://winarzapps.com/privacy-policy/" target="_blank">Privacy Policy</a>. By using StoryTeller AI, you consent to the collection and use of your data as described in our Privacy Policy.</p>
+    <p>We collect and store the following information: your name, email address, payment information (processed by Whop), generated book content, and usage data to improve the Service.</p>
+
+    <!-- 9. LIMITATION OF LIABILITY -->
+    <h2>9. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, MOSH BARI / ZPRESSO LLC SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, BUSINESS OPPORTUNITIES, OR GOODWILL, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE SERVICE.</p>
+    <p>Our total liability for any claim arising from or relating to the Service shall not exceed the amount you paid to us in the twelve (12) months preceding the claim.</p>
+
+    <!-- 10. INDEMNIFICATION -->
+    <h2>10. Indemnification</h2>
+    <p>You agree to indemnify and hold harmless Mosh Bari / Zpresso LLC, its affiliates, officers, and employees from any claims, damages, losses, or expenses (including reasonable legal fees) arising from your use of the Service, your violation of these Terms, or your violation of any rights of a third party.</p>
+
+    <!-- 11. TERMINATION -->
+    <h2>11. Termination</h2>
+    <p>We reserve the right to suspend or terminate your account at any time if you violate these Terms. Upon termination:</p>
+    <ul>
+      <li>Your access to the Service will be immediately revoked</li>
+      <li>Any unused credits or remaining subscription time may be forfeited</li>
+      <li>We may delete your account data after a reasonable retention period</li>
+    </ul>
+    <p>You may also terminate your account at any time by contacting us. Termination does not entitle you to a refund outside of the refund policy described in Section 4.</p>
+
+    <!-- 12. GOVERNING LAW -->
+    <h2>12. Governing Law & Disputes</h2>
+    <p>These Terms are governed by the laws of the United Arab Emirates. Any disputes arising from these Terms or the Service shall be resolved through binding arbitration, except where prohibited by law. You agree to waive any right to participate in class-action lawsuits or class-wide arbitration.</p>
+
+    <!-- 13. CONTACT -->
+    <h2>13. Contact Information</h2>
+    <p>If you have questions about these Terms, wish to request a refund, or need to report an issue, please contact us:</p>
+    <p><strong>Mosh Bari / Zpresso LLC</strong><br>
+    Email: support@storyteller.click<br>
+    Website: <a href="https://storyteller.click">https://storyteller.click</a></p>
+
+    <!-- 14. CHANGES -->
+    <h2>14. Changes to These Terms</h2>
+    <p>We may update these Terms from time to time. When we make material changes, we will notify you via email or through the Service. Your continued use of StoryTeller AI after changes take effect constitutes acceptance of the updated Terms.</p>
+
+    <!-- 15. DISCLAIMERS -->
+    <h2>15. Additional Disclaimers</h2>
+    <p>This site is not a part of the Facebook website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.</p>
+    <p>*Earnings and income representations made by Mosh Bari, Mosh Bari's agency, and Mosh Bari's agency and their advertisers/sponsors (collectively, "Mosh Bari's agency") are aspirational statements only of your earnings potential. These results are not typical and results will vary. The results on this page are OUR results and from years of testing. We can in NO way guarantee you will get similar results.</p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0 24px;">
+    <p style="text-align:center;color:var(--muted);font-size:13px;">By using StoryTeller AI, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.</p>
+    <p style="text-align:center;color:rgba(255,255,255,0.25);font-size:12px;">© 2025 Mosh Bari — All Rights Reserved. | Version 1.0</p>
+
+  </div>
+
+  <div class="footer">
+    <p>2026 Mosh Bari — Copyright© 2025. All Rights Reserved.</p>
+    <div style="margin-top:8px;">
+      <a href="https://winarzapps.com/privacy-policy/">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="https://winarzapps.com/terms-of-service/">Additional Terms</a>
+      <a href="https://winarzapps.com/earning-disclaimer">Earnings Disclaimer</a>
+    </div>
+  </div>
+
+</body>
+</html>
