@@ -680,6 +680,7 @@
         <div><div class="lib-header"><h3>📖 My Library</h3></div>
           <div class="books-grid" id="booksGrid"><div class="no-books-msg"><div class="big-emoji">📚</div><p>No books yet — create your first one above!</p></div></div>
         </div>
+        <div style="text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06)"><a href="https://moshbari.hesk.com/" target="_blank" style="color:#8395A7;font-size:13px;text-decoration:none;font-weight:600">📩 Need help? Contact Support</a><span style="color:#3A3F50;margin:0 12px">|</span><a href="/terms" target="_blank" style="color:#8395A7;font-size:13px;text-decoration:none;font-weight:600">Terms</a><span style="color:#3A3F50;margin:0 12px">|</span><a href="https://winarzapps.com/privacy-policy/" target="_blank" style="color:#8395A7;font-size:13px;text-decoration:none;font-weight:600">Privacy</a></div>
       </div>
     </section>
     <section class="section" id="viewerSection">
@@ -699,7 +700,7 @@
     </section>
   </div>
   <div class="modal-bg" id="authModal"><div class="modal-box"><button class="close" onclick="closeModal()">&times;</button>
-    <div id="loginView"><h2>Welcome Back! 👋</h2><p class="sub">Let's make some books</p><div class="form-err" id="loginErr"></div><div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Your password"></div><button class="btn-submit" onclick="doLogin()">Log In 📖</button><p class="switch-link">Don't have an account? <a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank">Get Started Free</a></p></div>
+    <div id="loginView"><h2>Welcome Back! 👋</h2><p class="sub">Let's make some books</p><div class="form-err" id="loginErr"></div><div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div><div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="Your password"></div><button class="btn-submit" onclick="doLogin()">Log In 📖</button><p class="switch-link">Don't have an account? <a href="https://whop.com/checkout/plan_mPDplqokY94ye/" target="_blank">Get Started Free</a></p><p class="switch-link" style="margin-top:6px;font-size:12px"><a href="https://moshbari.hesk.com/" target="_blank" style="color:#8395A7">Need help? Contact Support</a></p></div>
   </div></div>
   <div class="wizard-overlay" id="wizardOverlay"><div class="wizard-particles" id="wizParticles"></div>
     <div class="wizard-content">
@@ -874,5 +875,24 @@
     document.addEventListener('keydown',function(e){if(!currentBook)return;if(e.key==='ArrowRight'||e.key==='ArrowDown')goPage(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')goPage(-1);});
     let touchStartX=0;document.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX;});document.addEventListener('touchend',function(e){if(!currentBook)return;const diff=touchStartX-e.changedTouches[0].clientX;if(Math.abs(diff)>60){goPage(diff>0?1:-1);}});
   </script>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/terms">Terms of Service</a>
+        <a href="https://winarzapps.com/privacy-policy/" target="_blank">Privacy Policy</a>
+        <a href="https://winarzapps.com/earning-disclaimer" target="_blank">Earnings Disclaimer</a>
+        <a href="/pricing">Pricing</a>
+        <a href="https://moshbari.hesk.com/" target="_blank">📩 Support Desk</a>
+      </div>
+      <p class="footer-copy">2026 Mosh Bari — Copyright© 2025. All Rights Reserved.</p>
+      <div class="footer-legal">
+        <p>This site is not a part of the Facebook website or Facebook Inc. Additionally, This site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.</p>
+        <p>*Earnings and income representations made by Mosh Bari, Mosh Bari's agency, and Mosh Bari's agency and their advertisers/sponsors (collectively, "Mosh Bari's agency") are aspirational statements only of your earnings potential. These results are not typical and results will vary. The results on this page are OUR results and from years of testing. We can in NO way guarantee you will get similar results.</p>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
