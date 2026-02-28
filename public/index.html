@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StoryTeller ✨ AI Children's Book Creator</title>
+  <title>StoryTeller ✨ AI Children's Book Agent — 3 Clicks to a Finished Book</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -319,10 +319,22 @@
     .cta-btn { padding:18px 48px; font-size:19px; border:none; border-radius:60px; background:linear-gradient(135deg,var(--coral),var(--sunset)); color:white; cursor:pointer; font-family:'Baloo 2',cursive; box-shadow:0 8px 30px rgba(255,107,107,0.4); transition:0.4s; position:relative; z-index:1; }
     .cta-btn:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(255,107,107,0.5); }
 
+    /* COMPARISON TABLE */
+    .compare-wrap { max-width:750px; margin:0 auto; }
+    .compare-table { width:100%; border-collapse:separate; border-spacing:0; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.06); }
+    .compare-table th { padding:16px 20px; font-size:14px; font-weight:700; text-align:left; border-bottom:2px solid rgba(0,0,0,0.06); }
+    .compare-table th:first-child { color:var(--muted); }
+    .compare-table th:nth-child(2) { background:rgba(255,107,107,0.06); color:var(--coral); }
+    .compare-table th:nth-child(3) { color:var(--muted); }
+    .compare-table td { padding:14px 20px; font-size:14px; color:var(--muted); border-bottom:1px solid rgba(0,0,0,0.04); font-weight:500; }
+    .compare-table td:nth-child(2) { background:rgba(255,107,107,0.03); color:var(--text); font-weight:700; }
+    .compare-table tr:last-child td { border-bottom:none; }
+
     @media(max-width:768px) {
       .steps-grid { grid-template-columns:1fr; max-width:360px; margin:0 auto; }
       .features-grid { grid-template-columns:1fr; }
       .testi-grid { grid-template-columns:1fr; max-width:400px; margin:0 auto; }
+      .compare-table th, .compare-table td { padding:10px 12px; font-size:12px; }
     }
 
   </style>
@@ -341,13 +353,13 @@
     <section class="section active" id="heroSection">
       <div class="hero">
         <div class="floating-elements" id="floatingEl"></div>
-        <div class="hero-badge"><span class="dot"></span> AI-Powered Book Creator</div>
-        <h1>Create Beautiful<br><span class="grad">Children's Books</span><br>in Minutes</h1>
-        <p>Type a topic and watch our AI write the story, illustrate every page, and deliver a stunning cartoon book — ready to read, share, or sell.</p>
-        <button class="btn-hero" onclick="openModal('signup')">Start Creating — It's Free! 📚</button>
+        <div class="hero-badge"><span class="dot"></span> OpenClaw-Style AI Agent — Built for Children's Books</div>
+        <h1>3 Clicks.<br><span class="grad">A Complete Children's<br>Book.</span><br>Zero Writing.</h1>
+        <p>StoryTeller is an autonomous AI book agent — like OpenClaw, but for children's books. Pick a done-for-you story idea, hit create, and three AI agents write, illustrate, and publish a print-ready book while you watch. No writing. No design skills. No effort.</p>
+        <button class="btn-hero" onclick="openModal('signup')">Create Your First Book Free →</button>
         <div class="hero-features">
-          <div class="hero-feat"><div class="icon">🎨</div>AI Illustrations</div>
-          <div class="hero-feat"><div class="icon">📖</div>9-Page Stories</div>
+          <div class="hero-feat"><div class="icon">🖱️</div>3 Clicks to a Book</div>
+          <div class="hero-feat"><div class="icon">🤖</div>3 Autonomous Agents</div>
           <div class="hero-feat"><div class="icon">⚡</div>Under 2 Minutes</div>
         </div>
       </div>
@@ -359,20 +371,20 @@
       <!-- HOW IT WORKS -->
       <div class="lp-section-alt">
         <div class="lp-section">
-          <h2 class="lp-title">How It <span class="grad">Works</span></h2>
-          <p class="lp-subtitle">Three simple steps to create a personalized children's book your kids will love.</p>
+          <h2 class="lp-title">Three Clicks. <span class="grad">Done.</span></h2>
+          <p class="lp-subtitle">No writing. No prompting. No design skills. Just click.</p>
           <div class="steps-grid">
-            <div class="step-card"><span class="step-num">1</span><span class="step-icon">💡</span><h3>Pick a Story Idea</h3><p>Choose from 100+ creative prompts or write your own topic. Pick an art style and mood.</p></div>
-            <div class="step-card"><span class="step-num">2</span><span class="step-icon">🤖</span><h3>AI Creates Your Book</h3><p>Our AI agents write the story, illustrate every page, and assemble a complete book in under 2 minutes.</p></div>
-            <div class="step-card"><span class="step-num">3</span><span class="step-icon">📥</span><h3>Download & Share</h3><p>Get your book as PDF, images, Amazon KDP format, or a shareable flipbook link. Print it or read on screen!</p></div>
+            <div class="step-card"><span class="step-num">1</span><span class="step-icon">🖱️</span><h3>Click a Story Idea</h3><p>Browse 100+ done-for-you story ideas and tap one you like. Don't want to choose? Hit the shuffle button and let the agent pick everything for you.</p></div>
+            <div class="step-card"><span class="step-num">2</span><span class="step-icon">🤖</span><h3>Click "Create Book"</h3><p>One button. Three AI agents activate — the writer crafts the story, the illustrator paints every page, the assembler builds your book. Watch them work live.</p></div>
+            <div class="step-card"><span class="step-num">3</span><span class="step-icon">📥</span><h3>Click "Download"</h3><p>Your finished book is ready. Grab it as PDF, Amazon KDP format, image pack, or shareable flipbook link. Full commercial rights — sell it anywhere.</p></div>
           </div>
         </div>
       </div>
 
       <!-- SAMPLE BOOKS GALLERY -->
       <div class="lp-section">
-        <h2 class="lp-title">Books Created by <span class="grad">StoryTeller</span></h2>
-        <p class="lp-subtitle">Real books generated by our AI — each one unique, illustrated, and ready in under 2 minutes.</p>
+        <h2 class="lp-title">Books Created by <span class="grad">Our Agents</span></h2>
+        <p class="lp-subtitle">Real books generated autonomously — each one unique, illustrated, and ready in under 2 minutes. Zero writing involved.</p>
         <div class="gallery-scroll">
           <div class="gallery-card"><div class="gallery-img">🐉</div><div class="gallery-info"><h4>The Friendly Dragon</h4><p>A dragon who is afraid of fire learns to be brave</p><span class="gallery-style">Cartoon</span></div></div>
           <div class="gallery-card"><div class="gallery-img">🚀</div><div class="gallery-info"><h4>Space Bunny Adventure</h4><p>A bunny builds a rocket ship from carrots</p><span class="gallery-style">Pixar 3D</span></div></div>
@@ -386,37 +398,54 @@
       <!-- FEATURES -->
       <div class="lp-section-alt">
         <div class="lp-section">
-          <h2 class="lp-title">Everything You <span class="grad">Need</span></h2>
-          <p class="lp-subtitle">Powerful AI tools to create, customize, and publish professional children's books.</p>
+          <h2 class="lp-title">Everything the Agents <span class="grad">Handle for You</span></h2>
+          <p class="lp-subtitle">You click. They create, illustrate, format, and publish.</p>
           <div class="features-grid">
-            <div class="feat-card"><div class="feat-icon">🎨</div><div class="feat-text"><h4>5 Art Styles</h4><p>Cartoon, Watercolor, Storybook, Anime, and Pixar 3D. Each creates a completely different look.</p></div></div>
-            <div class="feat-card"><div class="feat-icon">⚡</div><div class="feat-text"><h4>Under 2 Minutes</h4><p>Full story written, every page illustrated, and book assembled — all in about 90 seconds.</p></div></div>
-            <div class="feat-card"><div class="feat-icon">📕</div><div class="feat-text"><h4>Amazon KDP Ready</h4><p>Download in the exact format Amazon requires. Upload and start selling your book immediately.</p></div></div>
+            <div class="feat-card"><div class="feat-icon">🎨</div><div class="feat-text"><h4>5 Art Styles</h4><p>Cartoon, Watercolor, Storybook, Anime, and Pixar 3D. Pick one or let the agent choose for you.</p></div></div>
+            <div class="feat-card"><div class="feat-icon">⚡</div><div class="feat-text"><h4>90-Second Books</h4><p>Full story + all illustrations + assembled book. Done before your coffee gets cold.</p></div></div>
+            <div class="feat-card"><div class="feat-icon">📕</div><div class="feat-text"><h4>Amazon KDP Ready</h4><p>One-click export in the exact format Amazon requires. Upload and start selling immediately.</p></div></div>
             <div class="feat-card"><div class="feat-icon">📱</div><div class="feat-text"><h4>Shareable Flipbook</h4><p>Get a link to an interactive flipbook you can share with family, friends, or on social media.</p></div></div>
-            <div class="feat-card"><div class="feat-icon">🎭</div><div class="feat-text"><h4>Character Consistency</h4><p>Characters look the same on every page. No more random-looking people from page to page.</p></div></div>
+            <div class="feat-card"><div class="feat-icon">🎭</div><div class="feat-text"><h4>Consistent Characters</h4><p>Characters look the same on every page. No random AI faces — real visual continuity throughout.</p></div></div>
             <div class="feat-card"><div class="feat-icon">💰</div><div class="feat-text"><h4>One-Time Pricing</h4><p>No subscriptions. Pay once, create anytime. Your credits never expire.</p></div></div>
           </div>
+        </div>
+      </div>
+
+      <!-- COMPARISON TABLE -->
+      <div class="lp-section">
+        <h2 class="lp-title">Why an <span class="grad">Agent</span>, Not Just a Tool?</h2>
+        <p class="lp-subtitle">Other AI book tools make you do the work. StoryTeller's agents do it all — autonomously, end-to-end, in three clicks.</p>
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <tr><th></th><th>StoryTeller Agent ✨</th><th>Other AI Book Tools</th></tr>
+            <tr><td>User Effort</td><td>✅ 3 clicks, zero typing</td><td>❌ Write prompts for each page</td></tr>
+            <tr><td>Story + Illustrations</td><td>✅ Both, fully automatic</td><td>❌ Text only, or images only</td></tr>
+            <tr><td>Character Consistency</td><td>✅ Same characters every page</td><td>❌ Random different faces</td></tr>
+            <tr><td>Time to Complete</td><td>✅ Under 2 minutes</td><td>❌ Hours of manual work</td></tr>
+            <tr><td>Print-Ready Output</td><td>✅ PDF + Amazon KDP format</td><td>❌ Raw text/images only</td></tr>
+            <tr><td>Commercial Rights</td><td>✅ Full ownership, sell anywhere</td><td>⚠️ Varies by platform</td></tr>
+          </table>
         </div>
       </div>
 
       <!-- TESTIMONIALS -->
       <div class="lp-section">
         <h2 class="lp-title">Loved by <span class="grad">Parents & Creators</span></h2>
-        <p class="lp-subtitle">See what people are saying about StoryTeller.</p>
+        <p class="lp-subtitle">See what people are saying about their AI book agents.</p>
         <div class="testi-grid">
           <div class="testi-card">
             <div class="testi-stars">★★★★★</div>
-            <p class="testi-text">"My daughter's face when she saw a book with her name in it — priceless. We've made 8 books so far and she asks for a new one every week!"</p>
+            <p class="testi-text">"My daughter picked a story about a rainbow unicorn, I clicked create, and 90 seconds later we were reading a real book together. She thinks I'm a magician now."</p>
             <div class="testi-author"><div class="testi-avatar" style="background:var(--coral)">S</div><div><div class="testi-name">Sarah M.</div><div class="testi-role">Mom of 2</div></div></div>
           </div>
           <div class="testi-card">
             <div class="testi-stars">★★★★★</div>
-            <p class="testi-text">"I sell custom children's books on Etsy. StoryTeller lets me create a new book in 2 minutes instead of 2 weeks. Total game changer for my business."</p>
+            <p class="testi-text">"I sell custom children's books on Etsy. Three clicks and I have a new product. I've listed 40 books this month without writing a single word."</p>
             <div class="testi-author"><div class="testi-avatar" style="background:var(--ocean)">J</div><div><div class="testi-name">James K.</div><div class="testi-role">Etsy Seller</div></div></div>
           </div>
           <div class="testi-card">
             <div class="testi-stars">★★★★★</div>
-            <p class="testi-text">"I use it in my kindergarten class. Each kid gets a book about something they love. The illustrations are beautiful and the kids go crazy for them."</p>
+            <p class="testi-text">"I use it in my kindergarten class. I just pick a topic about each kid's favorite thing, tap create, and they each get a personalized book. The AI agents do everything."</p>
             <div class="testi-author"><div class="testi-avatar" style="background:var(--mint)">L</div><div><div class="testi-name">Linda T.</div><div class="testi-role">Kindergarten Teacher</div></div></div>
           </div>
         </div>
@@ -428,12 +457,12 @@
           <h2 class="lp-title">Frequently Asked <span class="grad">Questions</span></h2>
           <p class="lp-subtitle">Got questions? We've got answers.</p>
           <div class="faq-list">
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long does it take to create a book?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>About 60-90 seconds for a 5-page book and under 2 minutes for a 12-page book. Our AI writes the story and creates all illustrations simultaneously.</p></div></div>
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I sell the books I create?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Yes! You own full commercial rights to every book you create. Many of our users sell on Amazon KDP, Etsy, and other platforms.</p></div></div>
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do my credits expire?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Never. Once you buy credits, they're yours forever. Use them whenever you want — no monthly limits or subscriptions.</p></div></div>
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What art styles are available?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>We offer 5 styles: Cartoon (colorful and fun), Watercolor (soft and artistic), Storybook (classic illustration), Anime (Japanese-style), and Pixar 3D (modern CGI look).</p></div></div>
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I customize the characters?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Our AI automatically creates detailed, consistent characters based on your story. Each character looks the same across every page of the book.</p></div></div>
-            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is there a free trial?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Yes! Every new account gets 3 free books. No credit card required. Create your first book in the next 2 minutes!</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is an "AI agent" and why is this like OpenClaw?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>OpenClaw showed the world what autonomous AI agents can do — AI that actually does things, not just talks. StoryTeller uses the same concept: three specialized AI agents that autonomously write, illustrate, and assemble complete children's books. You click, they deliver. No prompting, no manual work.</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need to write anything?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>No. You can pick from 100+ done-for-you story ideas with one click. Or hit "Surprise Me" and the agent selects everything for you — topic, art style, mood, everything. Zero writing required.</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long does it take to create a book?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>About 60-90 seconds for a 5-page book and under 2 minutes for a 12-page book. You can watch all three agents working in real-time during creation.</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I sell the books I create?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Yes! Full commercial rights on every book. Many users sell on Amazon KDP, Etsy, and other platforms. We export in Amazon's exact KDP format — one click to download, one click to upload.</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do my credits expire?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Never. One-time purchase, use whenever you want. No subscriptions, no monthly limits.</p></div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is there a free trial?<span class="faq-arrow">▼</span></div><div class="faq-a"><p>Yes! 3 free books, no credit card needed. Your agents are ready right now — create your first book in three clicks.</p></div></div>
           </div>
         </div>
       </div>
@@ -441,9 +470,9 @@
       <!-- FINAL CTA -->
       <div class="cta-section">
         <div class="cta-box">
-          <h2>Ready to Create Your First Book? 📚</h2>
-          <p>Join thousands of parents and creators. Start free — no credit card needed.</p>
-          <button class="cta-btn" onclick="openModal('signup')">Start Creating — It's Free! ✨</button>
+          <h2>Three Clicks. A Finished Book. Try It Free. 📚</h2>
+          <p>No writing. No design skills. No effort. Just pick, click, and download. Your AI agents are standing by.</p>
+          <button class="cta-btn" onclick="openModal('signup')">Create Your First Book Free →</button>
         </div>
       </div>
     </div>
