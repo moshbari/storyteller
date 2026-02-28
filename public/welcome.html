@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to StoryTeller AI! 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0C14;
+      --bg-card: #12141E;
+      --text: #E8ECF4;
+      --muted: #7A849A;
+      --border: rgba(255,255,255,0.06);
+      --coral: #FF6B6B;
+      --sunset: #FF8E53;
+      --purple: #BB6BD9;
+      --cyan: #56CCF2;
+      --green: #6BCB77;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Baloo 2', cursive;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Background glow */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+    }
+    body::before {
+      width: 400px; height: 400px;
+      background: rgba(255,107,107,0.08);
+      top: -100px; right: -100px;
+    }
+    body::after {
+      width: 350px; height: 350px;
+      background: rgba(187,107,217,0.06);
+      bottom: -100px; left: -100px;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .emoji-top { font-size: 48px; margin-bottom: 12px; }
+    .title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .plan-free { background: rgba(107,203,119,0.1); color: var(--green); border: 1px solid rgba(107,203,119,0.2); }
+    .plan-starter { background: rgba(187,107,217,0.1); color: var(--purple); border: 1px solid rgba(187,107,217,0.2); }
+    .plan-creator { background: rgba(255,107,107,0.1); color: var(--coral); border: 1px solid rgba(255,107,107,0.2); }
+    .plan-credits { background: rgba(86,204,242,0.1); color: var(--cyan); border: 1px solid rgba(86,204,242,0.2); }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Baloo 2', cursive;
+      font-size: 15px;
+      outline: none;
+      transition: 0.3s;
+    }
+    .form-group input:focus {
+      border-color: rgba(255,107,107,0.4);
+      background: rgba(255,255,255,0.06);
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--coral), var(--sunset));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255,107,107,0.3);
+    }
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 16px;
+      display: none;
+    }
+    .msg.error { background: rgba(255,107,107,0.1); color: var(--coral); display: block; }
+    .msg.success { background: rgba(107,203,119,0.1); color: var(--green); display: block; }
+
+    .divider {
+      margin: 24px 0;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+    .login-link {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .login-link a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .login-link a:hover { text-decoration: underline; }
+
+    /* Success state */
+    .success-view { display: none; text-align: center; }
+    .success-view .emoji-top { font-size: 56px; }
+    .success-view .title { margin-bottom: 12px; }
+    .success-view .subtitle { margin-bottom: 24px; }
+    .btn-go {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--green), #34D399);
+      color: white;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 800;
+      transition: 0.3s;
+    }
+    .btn-go:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(107,203,119,0.3);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- SET PASSWORD FORM -->
+    <div class="card" id="formView">
+      <div class="emoji-top">🎉</div>
+      <div class="title">Welcome to StoryTeller AI!</div>
+      <div class="subtitle">Your purchase was successful! Set your password below to start creating amazing children's books.</div>
+
+      <div class="form-group">
+        <label>YOUR NAME</label>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+      </div>
+
+      <div class="form-group">
+        <label>EMAIL (same one you used on checkout)</label>
+        <input type="email" id="emailInput" placeholder="your@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>CHOOSE A PASSWORD</label>
+        <input type="password" id="passInput" placeholder="At least 6 characters">
+      </div>
+
+      <div class="form-group">
+        <label>CONFIRM PASSWORD</label>
+        <input type="password" id="passConfirm" placeholder="Type password again">
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="setPassword()">Set Password & Start Creating 🚀</button>
+
+      <div class="msg" id="msg"></div>
+
+      <hr class="divider">
+      <div class="login-link">Already have a password? <a href="/">Log in here</a></div>
+    </div>
+
+    <!-- SUCCESS VIEW -->
+    <div class="card success-view" id="successView">
+      <div class="emoji-top">📚✨</div>
+      <div class="title">You're All Set!</div>
+      <div class="subtitle" id="successMsg">Your account is ready. Start creating personalized children's books with AI!</div>
+      <a href="/" class="btn-go" id="btnGo">Go Create Books →</a>
+    </div>
+
+    <div class="footer">StoryTeller AI — 3 Clicks. A Complete Children's Book.</div>
+  </div>
+
+  <script>
+    const API = window.location.origin + '/api/auth';
+
+    function showMsg(text, type) {
+      const msg = document.getElementById('msg');
+      msg.textContent = text;
+      msg.className = 'msg ' + type;
+    }
+
+    async function setPassword() {
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passInput').value;
+      const confirm = document.getElementById('passConfirm').value;
+
+      // Validate
+      if (!email) return showMsg('Please enter your email', 'error');
+      if (!password) return showMsg('Please choose a password', 'error');
+      if (password.length < 6) return showMsg('Password must be at least 6 characters', 'error');
+      if (password !== confirm) return showMsg('Passwords do not match', 'error');
+
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Setting up...';
+
+      try {
+        const res = await fetch(API + '/set-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMsg(data.error || 'Something went wrong', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Set Password & Start Creating 🚀';
+          return;
+        }
+
+        // Save token & user — auto login
+        localStorage.setItem('st_token', data.token);
+        localStorage.setItem('st_user', JSON.stringify(data.user));
+
+        // Show success
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('successView').style.display = 'block';
+        document.getElementById('successMsg').textContent = 
+          'Welcome ' + (data.user.name || '') + '! Your ' + data.user.plan + ' plan is active with ' + data.user.booksLimit + ' books. Let\'s create!';
+
+      } catch (err) {
+        showMsg('Connection error. Please try again.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Set Password & Start Creating 🚀';
+      }
+    }
+
+    // Allow Enter key to submit
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keypress', e => { if (e.key === 'Enter') setPassword(); });
+    });
+
+    // If already logged in, redirect to dashboard
+    const token = localStorage.getItem('st_token');
+    if (token) {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

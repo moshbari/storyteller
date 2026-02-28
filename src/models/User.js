@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   active: { type: Boolean, default: true },
   whopMembershipId: { type: String, default: '' },
   whopEmail: { type: String, default: '' },
+  needsPasswordSetup: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

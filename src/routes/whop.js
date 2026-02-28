@@ -54,7 +54,8 @@ async function findOrCreateUser(email, name) {
       plan: 'free',
       booksCreated: 0,
       booksLimit: 3,
-      active: true
+      active: true,
+      needsPasswordSetup: true
     });
     await user.save();
     console.log('👤 Auto-created user for Whop buyer:', email);
