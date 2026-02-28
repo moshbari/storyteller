@@ -70,16 +70,27 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
-    if (!user) return res.status(400).json({ error: 'Email not found' });
+    const cleanEmail = (email || '').toLowerCase().trim();
+    console.log('🔑 Login attempt:', cleanEmail);
+    
+    const user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      console.log('❌ User not found for email:', cleanEmail);
+      // Debug: check total user count
+      const count = await User.countDocuments();
+      const allEmails = await User.find({}).select('email').lean();
+      console.log('📊 Total users:', count, '| All emails:', allEmails.map(u => u.email).join(', '));
+      return res.status(400).json({ error: 'Email not found' });
+    }
 
     // If user was created by Whop and hasn't set password yet, tell them
     if (user.needsPasswordSetup) {
-      return res.status(400).json({ error: 'Please set your password first', needsPasswordSetup: true });
+      return res.status(400).json({ error: 'Please set your password first at /welcome', needsPasswordSetup: true });
     }
 
     // Use the instance method from User model
     const valid = await user.comparePassword(password);
+    console.log('🔑 Password valid:', valid, 'for:', cleanEmail);
     if (!valid) return res.status(400).json({ error: 'Wrong password' });
 
     if (user.active === false) return res.status(403).json({ error: "Your account has been deactivated. Contact support." });
@@ -141,6 +152,29 @@ router.post('/set-password', async (req, res) => {
     });
   } catch (error) {
     console.log('❌ Set password error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Debug: check if user exists (REMOVE LATER)
+router.get('/check-user/:email', async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase().trim();
+    const user = await User.findOne({ email });
+    if (!user) {
+      const count = await User.countDocuments();
+      return res.json({ found: false, totalUsers: count });
+    }
+    res.json({ 
+      found: true, 
+      email: user.email, 
+      name: user.name,
+      plan: user.plan,
+      needsPasswordSetup: user.needsPasswordSetup,
+      hasPassword: !!user.password,
+      passwordLength: user.password?.length || 0
+    });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
