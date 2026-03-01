@@ -47,6 +47,11 @@ app.get('/terms', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/terms.html'));
 });
 
+// Serve white label sales page at /whitelabel
+app.get('/whitelabel', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/whitelabel.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 StoryTeller running on port ${PORT}`);
 });
