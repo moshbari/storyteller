@@ -39,6 +39,13 @@ Make the story fun, educational, and age-appropriate. The imagePrompt should des
     const content = response.data.choices[0].message.content;
     const parsed = JSON.parse(content.replace(/```json|```/g, '').trim());
 
+    // Clean escaped quotes from AI text (e.g. \' → ' and \" → ")
+    if (parsed.pages) {
+      parsed.pages.forEach(p => {
+        if (p.text) p.text = p.text.replace(/\\'/g, "'").replace(/\\"/g, '"');
+      });
+    }
+
     return {
       success: true,
       story: parsed.pages,

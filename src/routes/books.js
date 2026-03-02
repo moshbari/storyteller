@@ -412,7 +412,7 @@ router.get('/:id/flipbook', auth, async (req, res) => {
     // Build pages JSON for the flipbook
     const pagesData = book.pages.map((p, i) => ({
       num: i + 1,
-      text: (p.text || '').replace(/'/g, "\\'").replace(/\n/g, ' '),
+      text: (p.text || '').replace(/\n/g, ' '),
       imageUrl: p.imageUrl || ''
     }));
 
