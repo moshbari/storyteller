@@ -47,7 +47,15 @@ async function generateBookImages(pages, characterDescription) {
 
   console.log('🎨 Flux generating', pages.length, 'images with seed:', bookSeed);
 
+  // Helper: wait between requests to avoid rate limiting
+  function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
   for (let i = 0; i < pages.length; i++) {
+    // Wait 10 seconds between requests (Replicate allows 6/min on low-credit accounts)
+    if (i > 0) {
+      console.log('  ⏳ Waiting 10s (rate limit)...');
+      await delay(10000);
+    }
     try {
       // Build a rich prompt with character description baked in
       const prompt = [
@@ -89,8 +97,43 @@ async function generateBookImages(pages, characterDescription) {
         results.push({ success: false, error: 'No image generated' });
       }
     } catch (error) {
-      console.log('  ⚠️ Flux page ' + (i + 1) + ' failed:', error.response?.data?.detail || error.message);
-      results.push({ success: false, error: error.message });
+      const errMsg = error.response?.data?.detail || error.message;
+      console.log('  ⚠️ Flux page ' + (i + 1) + ' failed:', errMsg);
+
+      // If throttled, wait and retry once
+      if (errMsg && errMsg.includes('throttled')) {
+        console.log('  🔄 Throttled — waiting 15s and retrying page ' + (i + 1) + '...');
+        await delay(15000);
+        try {
+          const retry = await axios.post(
+            'https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions',
+            {
+              input: {
+                prompt,
+                seed: bookSeed,
+                num_outputs: 1,
+                output_format: 'png'
+              }
+            },
+            {
+              headers: {
+                'Authorization': 'Bearer ' + REPLICATE_API_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'wait'
+              }
+            }
+          );
+          if (retry.data.output && retry.data.output.length > 0) {
+            console.log('  ✅ Flux page ' + (i + 1) + ' retry success!');
+            results.push({ success: true, imageUrl: retry.data.output[0], provider: 'flux' });
+            continue;
+          }
+        } catch (retryErr) {
+          console.log('  ❌ Retry also failed for page ' + (i + 1));
+        }
+      }
+
+      results.push({ success: false, error: errMsg });
     }
   }
 
