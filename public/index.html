@@ -127,11 +127,24 @@
     .option-row { margin-bottom:16px; }
     .option-row .opt-label { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
     .opt-chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .art-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+    @media(max-width:900px) { .art-grid { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:480px) { .art-grid { grid-template-columns:repeat(2,1fr); } }
+    .art-thumb { border-radius:12px; border:2px solid var(--border); background:var(--bg-card); cursor:pointer; transition:all 0.3s; overflow:hidden; text-align:center; position:relative; }
+    .art-thumb:hover { border-color:var(--coral); transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,107,107,0.2); }
+    .art-thumb.selected { border-color:var(--coral); box-shadow:0 0 0 1px var(--coral), 0 6px 20px rgba(255,107,107,0.3); }
+    .art-thumb img { width:100%; height:80px; object-fit:cover; display:block; }
+    .art-thumb .art-name { padding:6px 4px; font-family:'Quicksand',sans-serif; font-weight:700; font-size:11px; color:var(--text); }
+    .art-thumb.selected .art-name { color:var(--coral); }
+    .art-thumb .art-badge { display:none; position:absolute; top:4px; right:4px; width:22px; height:22px; background:var(--coral); border-radius:50%; color:#fff; font-size:13px; line-height:22px; text-align:center; z-index:2; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+    .art-thumb.selected .art-badge { display:block; }
 
     .opt-chip { padding:10px 18px; border-radius:12px; border:2px solid var(--border); background:var(--bg-card); cursor:pointer; transition:all 0.3s; font-family:'Quicksand',sans-serif; font-weight:600; font-size:14px; color:var(--text); display:inline-flex; align-items:center; gap:6px; }
     .opt-chip:hover { border-color:var(--coral); background:rgba(255,107,107,0.06); }
     .opt-chip.selected { border-color:var(--coral); background:rgba(255,107,107,0.1); color:var(--coral); font-weight:700; }
-    .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; } @media(max-width:640px) { .options-grid { grid-template-columns:1fr; } }
+    .options-grid { display:flex; flex-direction:column; gap:14px; margin-bottom:16px; }
+    .opts-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:640px) { .opts-row { grid-template-columns:1fr; } } 
     
     .or-divider { text-align:center; color:var(--muted); font-weight:700; font-size:13px; margin:16px 0; position:relative; }
     .or-divider::before,.or-divider::after { content:''; position:absolute; top:50%; width:calc(50% - 30px); height:1px; background:var(--border); }
@@ -644,24 +657,25 @@
           <div class="options-grid">
             <div class="option-row">
               <div class="opt-label">🎨 Art Style</div>
-              <div class="opt-chips" id="artChips">
-                <div class="opt-chip selected" onclick="selectOpt(this,'art')">🖍️ Cartoon</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">💧 Watercolor</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">📖 Storybook</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">⚡ Anime</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">✨ Pixar 3D</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">🖍️ Crayon</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">✏️ Pencil Sketch</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">💥 Pop Art</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">✂️ Paper Cut</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">🎨 Oil Painting</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">💬 Comic Book</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">🌸 Pastel</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">📷 Vintage Retro</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">🌟 Chibi</div>
-                <div class="opt-chip" onclick="selectOpt(this,'art')">🖌️ Chalk Art</div>
+              <div class="art-grid" id="artChips">
+                <div class="art-thumb selected" onclick="selectOpt(this,'art')" data-value="Cartoon"><div class="art-badge">✓</div><img src="/art-samples/cartoon.png" alt="Cartoon" loading="lazy"><div class="art-name">Cartoon</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Watercolor"><div class="art-badge">✓</div><img src="/art-samples/watercolor.png" alt="Watercolor" loading="lazy"><div class="art-name">Watercolor</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Storybook"><div class="art-badge">✓</div><img src="/art-samples/storybook.png" alt="Storybook" loading="lazy"><div class="art-name">Storybook</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Anime"><div class="art-badge">✓</div><img src="/art-samples/anime.png" alt="Anime" loading="lazy"><div class="art-name">Anime</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Pixar 3D"><div class="art-badge">✓</div><img src="/art-samples/pixar3d.png" alt="Pixar 3D" loading="lazy"><div class="art-name">Pixar 3D</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Crayon"><div class="art-badge">✓</div><img src="/art-samples/crayon.png" alt="Crayon" loading="lazy"><div class="art-name">Crayon</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Pencil Sketch"><div class="art-badge">✓</div><img src="/art-samples/pencil-sketch.png" alt="Pencil Sketch" loading="lazy"><div class="art-name">Pencil Sketch</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Pop Art"><div class="art-badge">✓</div><img src="/art-samples/pop-art.png" alt="Pop Art" loading="lazy"><div class="art-name">Pop Art</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Paper Cut"><div class="art-badge">✓</div><img src="/art-samples/paper-cut.png" alt="Paper Cut" loading="lazy"><div class="art-name">Paper Cut</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Oil Painting"><div class="art-badge">✓</div><img src="/art-samples/oil-painting.png" alt="Oil Painting" loading="lazy"><div class="art-name">Oil Painting</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Comic Book"><div class="art-badge">✓</div><img src="/art-samples/comic-book.png" alt="Comic Book" loading="lazy"><div class="art-name">Comic Book</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Pastel"><div class="art-badge">✓</div><img src="/art-samples/pastel.png" alt="Pastel" loading="lazy"><div class="art-name">Pastel</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Vintage Retro"><div class="art-badge">✓</div><img src="/art-samples/vintage-retro.png" alt="Vintage Retro" loading="lazy"><div class="art-name">Vintage Retro</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Chibi"><div class="art-badge">✓</div><img src="/art-samples/chibi.png" alt="Chibi" loading="lazy"><div class="art-name">Chibi</div></div>
+                <div class="art-thumb" onclick="selectOpt(this,'art')" data-value="Chalk Art"><div class="art-badge">✓</div><img src="/art-samples/chalk-art.png" alt="Chalk Art" loading="lazy"><div class="art-name">Chalk Art</div></div>
               </div>
             </div>
+            <div class="opts-row">
             <div class="option-row">
               <div class="opt-label">💫 Story Mood</div>
               <div class="opt-chips" id="moodChips">
@@ -686,6 +700,7 @@
                 <div class="opt-chip" onclick="selectOpt(this,'len')">📑 Medium (9 pages)</div>
                 <div class="opt-chip" onclick="selectOpt(this,'len')">📚 Long (12 pages)</div>
               </div>
+            </div>
             </div>
           </div>
 
@@ -1766,9 +1781,9 @@ const ALL_IDEAS=[
     function markIdeasSeen(ideas){const seen=getSeenIdeas();ideas.forEach(i=>{if(!seen.includes(i.title))seen.push(i.title);});localStorage.setItem(getSeenKey(),JSON.stringify(seen));}
     function loadIdeas(){let seen=getSeenIdeas();let unseen=ALL_IDEAS.filter(i=>!seen.includes(i.title));if(unseen.length<4){localStorage.setItem(getSeenKey(),JSON.stringify([]));unseen=[...ALL_IDEAS];showToast('🎉 You\'ve seen all 1000 ideas! 🎊 Starting fresh! Starting fresh!');}const s=[...unseen].sort(()=>Math.random()-0.5).slice(0,4);markIdeasSeen(s);document.getElementById('ideaChips').innerHTML=s.map(i=>'<div class="idea-chip" onclick="selectIdea(this,\''+i.title.replace(/'/g,"\\'")+'\',\''+i.desc.replace(/'/g,"\\'")+'\')"><span class="chip-emoji">'+i.emoji+'</span><span class="chip-title">'+i.title+'</span><span class="chip-desc">'+i.desc+'</span></div>').join('');}
     function selectIdea(el,t,d){document.querySelectorAll('.idea-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('inTitle').value=t;document.getElementById('inTopic').value=d;}
-    function selectOpt(el,group){el.parentElement.querySelectorAll('.opt-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
-    function getSelectedOpt(id){const el=document.querySelector('#'+id+' .opt-chip.selected');if(!el)return '';return el.textContent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,'').trim();}
-    function chooseAllForMe(){loadIdeas();setTimeout(()=>{const chips=document.querySelectorAll('.idea-chip');if(chips.length>0){const pick=chips[Math.floor(Math.random()*chips.length)];pick.click();}const artChips=document.querySelectorAll('#artChips .opt-chip');const moodChips=document.querySelectorAll('#moodChips .opt-chip');artChips[Math.floor(Math.random()*artChips.length)].click();moodChips[Math.floor(Math.random()*moodChips.length)].click();showToast('✨ All picked for you! Hit Generate!');},100);}
+    function selectOpt(el,group){el.parentElement.querySelectorAll('.opt-chip,.art-thumb').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+    function getSelectedOpt(id){const el=document.querySelector('#'+id+' .opt-chip.selected, #'+id+' .art-thumb.selected');if(!el)return '';return el.dataset.value||el.textContent.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,'').trim();}
+    function chooseAllForMe(){loadIdeas();setTimeout(()=>{const chips=document.querySelectorAll('.idea-chip');if(chips.length>0){const pick=chips[Math.floor(Math.random()*chips.length)];pick.click();}const artChips=document.querySelectorAll('#artChips .art-thumb');const moodChips=document.querySelectorAll('#moodChips .opt-chip');artChips[Math.floor(Math.random()*artChips.length)].click();moodChips[Math.floor(Math.random()*moodChips.length)].click();showToast('✨ All picked for you! Hit Generate!');},100);}
     function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('landingSections').style.display=(id==='heroSection')?'block':'none';}
     function goHome(){if(token){showSection('dashSection');}else{showSection('heroSection');}}
     function openModal(){document.getElementById('authModal').classList.add('open');}
