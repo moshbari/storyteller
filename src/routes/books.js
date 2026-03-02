@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const Book = require('../models/Book');
 const User = require('../models/User');
 const { generateStory } = require('../services/openaiService');
+const gptImageService = require('../services/gptImageService');
 const fluxService = require('../services/fluxService');
 
 const router = express.Router();
@@ -44,8 +45,8 @@ router.post('/create', auth, async (req, res) => {
     const bookImgDir = path.join(imagesDir, bookId);
     fs.mkdirSync(bookImgDir, { recursive: true });
 
-    // Step 2: Generate ALL images with Flux (character consistency via seed + detailed prompts)
-    console.log('🎨 Generating images with Flux Schnell...');
+    // Step 2: Generate ALL images with GPT Image Mini (character consistency via detailed prompts)
+    console.log('🎨 Generating images with GPT Image Mini...');
     
     // Add art style to prompts
     const styledPages = storyResult.story.map(p => ({
@@ -53,27 +54,31 @@ router.post('/create', auth, async (req, res) => {
       imagePrompt: p.imagePrompt + (artStyle ? '. Art style: ' + artStyle + '.' : '') + (mood ? ' Mood: ' + mood + '.' : '')
     }));
     
-    const fluxResults = await fluxService.generateBookImages(
+    const gptResults = await gptImageService.generateBookImages(
       styledPages,
       storyResult.characterDescription
     );
 
-    // Step 3: Build pages from Flux results
+    // Step 3: Build pages — GPT Image returns base64, save to disk. Flux fallback for failures.
     const pages = [];
     for (let i = 0; i < storyResult.story.length; i++) {
       const page = storyResult.story[i];
       let imageUrl = '';
       let provider = 'none';
 
-      if (fluxResults[i] && fluxResults[i].success) {
-        imageUrl = fluxResults[i].imageUrl;
-        provider = 'flux';
+      if (gptResults[i] && gptResults[i].success && gptResults[i].imageData) {
+        // Save base64 image to disk
+        const fileName = 'page-' + (i + 1) + '.png';
+        const filePath = path.join(bookImgDir, fileName);
+        fs.writeFileSync(filePath, Buffer.from(gptResults[i].imageData, 'base64'));
+        imageUrl = '/images/' + bookId + '/' + fileName;
+        provider = 'gpt-image-mini';
       } else {
-        // Retry once with a single image call as fallback
-        console.log('  🔄 Retrying page ' + (i + 1) + '...');
-        const retryResult = await fluxService.generateImage(page.imagePrompt);
-        if (retryResult.success) {
-          imageUrl = retryResult.imageUrl;
+        // Fallback to Flux if GPT Image fails
+        console.log('  🔄 Flux fallback for page ' + (i + 1));
+        const fluxResult = await fluxService.generateImage(page.imagePrompt);
+        if (fluxResult.success) {
+          imageUrl = fluxResult.imageUrl;
           provider = 'flux';
         }
       }
