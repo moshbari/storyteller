@@ -1,18 +1,8 @@
-const gemini = require('./geminiService');
 const flux = require('./fluxService');
 
 async function generateImage(prompt) {
-  // Try Gemini first (FREE!)
-  console.log('🎨 Trying Gemini...');
-  const geminiResult = await gemini.generateImage(prompt);
-
-  if (geminiResult.success) {
-    console.log('✅ Gemini success!');
-    return { ...geminiResult, provider: 'gemini' };
-  }
-
-  // If Gemini fails, use Flux (costs $0.003)
-  console.log('🔄 Switching to Flux...');
+  // Use Flux Schnell (costs $0.003 per image)
+  console.log('🎨 Generating image with Flux...');
   const fluxResult = await flux.generateImage(prompt);
 
   if (fluxResult.success) {
@@ -20,7 +10,7 @@ async function generateImage(prompt) {
     return { ...fluxResult, provider: 'flux' };
   }
 
-  return { success: false, error: 'Both providers failed' };
+  return { success: false, error: 'Image generation failed' };
 }
 
 module.exports = { generateImage };

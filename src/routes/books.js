@@ -5,7 +5,6 @@ const auth = require('../middleware/auth');
 const Book = require('../models/Book');
 const User = require('../models/User');
 const { generateStory } = require('../services/openaiService');
-const geminiService = require('../services/geminiService');
 const fluxService = require('../services/fluxService');
 
 const router = express.Router();
@@ -45,8 +44,8 @@ router.post('/create', auth, async (req, res) => {
     const bookImgDir = path.join(imagesDir, bookId);
     fs.mkdirSync(bookImgDir, { recursive: true });
 
-    // Step 2: Generate ALL images with character consistency via Gemini conversation
-    console.log('🎨 Generating images with character consistency...');
+    // Step 2: Generate ALL images with Flux (character consistency via seed + detailed prompts)
+    console.log('🎨 Generating images with Flux Schnell...');
     
     // Add art style to prompts
     const styledPages = storyResult.story.map(p => ({
@@ -54,29 +53,27 @@ router.post('/create', auth, async (req, res) => {
       imagePrompt: p.imagePrompt + (artStyle ? '. Art style: ' + artStyle + '.' : '') + (mood ? ' Mood: ' + mood + '.' : '')
     }));
     
-    const geminiResults = await geminiService.generateBookImages(
+    const fluxResults = await fluxService.generateBookImages(
       styledPages,
       storyResult.characterDescription
     );
 
-    // Step 3: Build pages, use Flux fallback for any failed Gemini images
+    // Step 3: Build pages from Flux results
     const pages = [];
     for (let i = 0; i < storyResult.story.length; i++) {
       const page = storyResult.story[i];
       let imageUrl = '';
       let provider = 'none';
 
-      if (geminiResults[i] && geminiResults[i].success) {
-        const fileName = 'page-' + (i + 1) + '.png';
-        const filePath = path.join(bookImgDir, fileName);
-        fs.writeFileSync(filePath, Buffer.from(geminiResults[i].imageData, 'base64'));
-        imageUrl = '/images/' + bookId + '/' + fileName;
-        provider = 'gemini';
+      if (fluxResults[i] && fluxResults[i].success) {
+        imageUrl = fluxResults[i].imageUrl;
+        provider = 'flux';
       } else {
-        console.log('  🔄 Flux fallback for page ' + (i + 1));
-        const fluxResult = await fluxService.generateImage(page.imagePrompt);
-        if (fluxResult.success) {
-          imageUrl = fluxResult.imageUrl;
+        // Retry once with a single image call as fallback
+        console.log('  🔄 Retrying page ' + (i + 1) + '...');
+        const retryResult = await fluxService.generateImage(page.imagePrompt);
+        if (retryResult.success) {
+          imageUrl = retryResult.imageUrl;
           provider = 'flux';
         }
       }
