@@ -7,6 +7,7 @@ const User = require('../models/User');
 const { generateStory } = require('../services/openaiService');
 const gptImageService = require('../services/gptImageService');
 const fluxService = require('../services/fluxService');
+const r2Storage = require('../services/r2StorageService');
 
 const router = express.Router();
 
@@ -42,8 +43,6 @@ router.post('/create', auth, async (req, res) => {
     console.log('🎭 Character:', storyResult.characterDescription);
 
     const bookId = Date.now().toString();
-    const bookImgDir = path.join(imagesDir, bookId);
-    fs.mkdirSync(bookImgDir, { recursive: true });
 
     // Step 2: Generate ALL images with GPT Image Mini (character consistency via detailed prompts)
     console.log('🎨 Generating images with GPT Image Mini...');
@@ -59,27 +58,44 @@ router.post('/create', auth, async (req, res) => {
       storyResult.characterDescription
     );
 
-    // Step 3: Build pages — GPT Image returns base64, save to disk. Flux fallback for failures.
+    // Step 3: Build pages — upload images to R2 cloud storage
     const pages = [];
     for (let i = 0; i < storyResult.story.length; i++) {
       const page = storyResult.story[i];
       let imageUrl = '';
       let provider = 'none';
 
+      const fileName = 'page-' + (i + 1) + '.png';
+      const r2Key = r2Storage.buildKey(userId, bookId, fileName);
+
       if (gptResults[i] && gptResults[i].success && gptResults[i].imageData) {
-        // Save base64 image to disk
-        const fileName = 'page-' + (i + 1) + '.png';
-        const filePath = path.join(bookImgDir, fileName);
-        fs.writeFileSync(filePath, Buffer.from(gptResults[i].imageData, 'base64'));
-        imageUrl = '/images/' + bookId + '/' + fileName;
-        provider = 'gpt-image-mini';
+        // Upload base64 image to R2
+        try {
+          imageUrl = await r2Storage.uploadBase64Image(gptResults[i].imageData, r2Key);
+          provider = 'gpt-image-mini';
+        } catch (uploadErr) {
+          console.log('  ⚠️ R2 upload failed for page ' + (i + 1) + ', saving locally as backup');
+          // Fallback: save locally if R2 fails
+          const bookImgDir = path.join(imagesDir, bookId);
+          if (!fs.existsSync(bookImgDir)) fs.mkdirSync(bookImgDir, { recursive: true });
+          fs.writeFileSync(path.join(bookImgDir, fileName), Buffer.from(gptResults[i].imageData, 'base64'));
+          imageUrl = '/images/' + bookId + '/' + fileName;
+          provider = 'gpt-image-mini';
+        }
       } else {
         // Fallback to Flux if GPT Image fails
         console.log('  🔄 Flux fallback for page ' + (i + 1));
         const fluxResult = await fluxService.generateImage(page.imagePrompt);
         if (fluxResult.success) {
-          imageUrl = fluxResult.imageUrl;
-          provider = 'flux';
+          // Download from Flux temporary URL and upload to R2 (so it never expires!)
+          try {
+            imageUrl = await r2Storage.uploadFromUrl(fluxResult.imageUrl, r2Key);
+            provider = 'flux';
+          } catch (uploadErr) {
+            console.log('  ⚠️ R2 upload failed for Flux page ' + (i + 1));
+            imageUrl = fluxResult.imageUrl; // Last resort: use temporary URL
+            provider = 'flux';
+          }
         }
       }
 
